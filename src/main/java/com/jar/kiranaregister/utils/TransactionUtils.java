@@ -4,7 +4,6 @@ import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import com.jar.kiranaregister.model.DTOModel.TransactionDTO;
 import com.jar.kiranaregister.model.Transaction;
-
 import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
@@ -13,7 +12,7 @@ public class TransactionUtils {
 
     public static TransactionDTO mapToDTO(Transaction transaction) {
 
-        TransactionDTO td =  new TransactionDTO();
+        TransactionDTO td = new TransactionDTO();
 
         td.setTransactionTime(transaction.getTransactionTime());
         td.setAmount(transaction.getAmount());
@@ -23,11 +22,11 @@ public class TransactionUtils {
         td.setCurrency(Currency.getInstance(transaction.getCurrency().name()));
 
         return td;
-
     }
+
     public static Transaction mapToTransaction(TransactionDTO transactionDTO) {
 
-        Transaction convertedTranssction =  new Transaction();
+        Transaction convertedTranssction = new Transaction();
 
         convertedTranssction.setAmount(transactionDTO.getAmount());
         convertedTranssction.setTransactionId(transactionDTO.getId());
@@ -37,7 +36,12 @@ public class TransactionUtils {
         return convertedTranssction;
     }
 
-    public static Transaction createNewTransaction(UUID transactionId, TransactionStatus status, Double amount, String currency, TransactionType transactionType) {
+    public static Transaction createNewTransaction(
+            UUID transactionId,
+            TransactionStatus status,
+            Double amount,
+            String currency,
+            TransactionType transactionType) {
         Transaction transaction = new Transaction();
 
         transaction.setTransactionId(transactionId);
@@ -45,10 +49,6 @@ public class TransactionUtils {
         transaction.setAmount(amount);
         transaction.setTransactionTime(new Date());
 
-
         return transaction;
     }
-
-
-
 }

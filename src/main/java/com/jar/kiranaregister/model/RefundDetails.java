@@ -22,13 +22,13 @@ public class RefundDetails {
 
     private Double amount;
 
-//    CREATE TABLE refund_details (
-//            refund_id VARCHAR(255) PRIMARY KEY,
-//    transaction_id VARCHAR(255) NOT NULL UNIQUE,
-//    refunded_bill_id INT NOT NULL,
-//    refund_date TIMESTAMP NOT NULL,
-//    refund_amount DECIMAL(10, 2) NOT NULL,
-//    FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id),
-//    FOREIGN KEY (refunded_bill_id) REFERENCES bills(bill_id)
-//            );
+    //    CREATE TABLE refund_details (
+    //            refund_id VARCHAR(255) PRIMARY KEY,
+    //    transaction_id VARCHAR(255) NOT NULL UNIQUE,
+    //    refunded_bill_id INT NOT NULL,
+    //    refund_date TIMESTAMP NOT NULL,
+    //    refund_amount DECIMAL(10, 2) NOT NULL,
+    //    FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id),
+    //    FOREIGN KEY (refunded_bill_id) REFERENCES bills(bill_id)
+    //            );
 }

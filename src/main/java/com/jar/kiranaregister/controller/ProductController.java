@@ -2,36 +2,36 @@ package com.jar.kiranaregister.controller;
 
 import com.jar.kiranaregister.model.DTOModel.ProductDTO;
 import com.jar.kiranaregister.repository.ProductRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 
 @RestController()
 @RequestMapping("/product")
 public class ProductController {
 
+    private final ProductRepository productRepository;
+
     @Autowired
-    private ProductRepository productRepository;
+    public ProductController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @GetMapping("/allProducts")
-    public ResponseEntity<?> getAllProducts(){
+    public ResponseEntity<?> getAllProducts() {
         List<ProductDTO> allProducts = productRepository.findAll();
         return ResponseEntity.ok(allProducts);
-
     }
 
     @PostMapping()
-    public ResponseEntity<?> addProduct(@RequestBody ProductDTO product){
+    public ResponseEntity<?> addProduct(@RequestBody ProductDTO product) {
 
-        try{
+        try {
             productRepository.save(product);
             return ResponseEntity.ok("added");
-        } catch (Exception e){
+        } catch (Exception e) {
             return (ResponseEntity<?>) ResponseEntity.internalServerError();
         }
     }
-
 }

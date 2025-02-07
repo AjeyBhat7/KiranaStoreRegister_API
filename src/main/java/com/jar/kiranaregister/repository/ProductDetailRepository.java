@@ -1,4 +1,3 @@
 package com.jar.kiranaregister.repository;
 
-public class ProductDetailRepository {
-}
+public class ProductDetailRepository {}

@@ -1,5 +1,7 @@
 package com.jar.kiranaregister.service.serviceImplementation;
 
+import static com.jar.kiranaregister.utils.TransactionUtils.mapToDTO;
+
 import com.jar.kiranaregister.enums.Currency;
 import com.jar.kiranaregister.enums.Interval;
 import com.jar.kiranaregister.enums.TransactionStatus;
@@ -11,24 +13,26 @@ import com.jar.kiranaregister.model.requestObj.TransactionRequest;
 import com.jar.kiranaregister.repository.TransactionRepository;
 import com.jar.kiranaregister.service.TransactionService;
 import com.jar.kiranaregister.utils.TransactionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.jar.kiranaregister.utils.TransactionUtils.mapToDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TransactionServiceImplementation implements TransactionService {
 
-    @Autowired
-    private TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
+    private final FxRatesService fxRatesService;
 
     @Autowired
-    private FxRatesService fxRatesService;
+    public TransactionServiceImplementation(
+            TransactionRepository transactionRepository, FxRatesService fxRatesService) {
+        this.transactionRepository = transactionRepository;
+        this.fxRatesService = fxRatesService;
+    }
 
-    public TransactionStatus addTransaction(TransactionRequest request, TransactionType transactionType) {
+    public TransactionStatus addTransaction(
+            TransactionRequest request, TransactionType transactionType) {
         Currency currency = validateCurrency(request.getCurrency());
 
         if (currency == null) {
@@ -48,22 +52,18 @@ public class TransactionServiceImplementation implements TransactionService {
         return TransactionStatus.SUCCESSFUL;
     }
 
-
-
     @Override
     public List<TransactionDTO> getAllTransactions(String targetCurrency) {
 
-        List<TransactionDTO> dto = transactionRepository.findAll().stream()
+        return transactionRepository.findAll().stream()
                 .map(transaction -> convertTransactionCurrency(transaction, targetCurrency))
                 .collect(Collectors.toList());
-
-        return dto;
     }
-
 
     @Override
     public TransactionDTO getTransactionById(UUID id, String targetCurrency) {
-        return transactionRepository.findById(id)
+        return transactionRepository
+                .findById(id)
                 .map(transaction -> convertTransactionCurrency(transaction, targetCurrency))
                 .orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
     }
@@ -84,8 +84,10 @@ public class TransactionServiceImplementation implements TransactionService {
         return transactions.stream().map(TransactionUtils::mapToDTO).collect(Collectors.toList());
     }
 
-    private TransactionDTO convertTransactionCurrency(Transaction transaction, String targetCurrency) {
-        if (targetCurrency == null || targetCurrency.equalsIgnoreCase(String.valueOf(transaction.getCurrency()))) {
+    private TransactionDTO convertTransactionCurrency(
+            Transaction transaction, String targetCurrency) {
+        if (targetCurrency == null
+                || targetCurrency.equalsIgnoreCase(String.valueOf(transaction.getCurrency()))) {
             return mapToDTO(transaction);
         }
         double convertedAmount = getConvertedAmount(transaction, targetCurrency);
@@ -107,7 +109,9 @@ public class TransactionServiceImplementation implements TransactionService {
             throw new IllegalArgumentException("Invalid currency type");
         }
 
-        double usdAmount = transaction.getAmount() / exchangeRates.get(String.valueOf(transaction.getCurrency()));
+        double usdAmount =
+                transaction.getAmount()
+                        / exchangeRates.get(String.valueOf(transaction.getCurrency()));
         return usdAmount * exchangeRates.get(targetCurrency.toUpperCase());
     }
 

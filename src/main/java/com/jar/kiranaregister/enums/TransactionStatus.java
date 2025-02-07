@@ -1,3 +1,8 @@
 package com.jar.kiranaregister.enums;
 
-public enum TransactionStatus { PENDING, SUCCESSFUL, REFUNDED, FAILED}
+public enum TransactionStatus {
+    PENDING,
+    SUCCESSFUL,
+    REFUNDED,
+    FAILED
+}

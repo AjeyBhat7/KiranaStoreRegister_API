@@ -2,15 +2,12 @@ package com.jar.kiranaregister.model.DTOModel;
 
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -24,5 +21,4 @@ public class TransactionDTO {
     private Currency currency;
 
     private TransactionType transactionType;
-
 }

@@ -1,8 +1,5 @@
 package com.jar.kiranaregister.controller;
 
-
-import com.jar.kiranaregister.enums.Currency;
-import com.jar.kiranaregister.enums.Interval;
 import com.jar.kiranaregister.model.DTOModel.ReportDTO;
 import com.jar.kiranaregister.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("report")
 public class ReportController {
 
+    private final ReportService reportService;
+
     @Autowired
-    private ReportService reportService;
+    public ReportController(ReportService reportService) {
+        this.reportService = reportService;
+    }
 
     @GetMapping("fetchReport")
-    public ResponseEntity<?> fetchReport(@RequestParam String interval, @RequestParam(required = false) String currency) {
+    public ResponseEntity<?> fetchReport(
+            @RequestParam String interval, @RequestParam(required = false) String currency) {
 
-        ReportDTO report =  reportService.fetchReport(interval, currency);
+        ReportDTO report = reportService.fetchReport(interval, currency);
         return new ResponseEntity<>(report, HttpStatus.OK);
     }
 

@@ -1,9 +1,7 @@
 package com.jar.kiranaregister.model.DTOModel;
 
-import lombok.Data;
-
 import java.util.List;
-
+import lombok.Data;
 
 @Data
 public class ReportDTO {
@@ -14,5 +12,4 @@ public class ReportDTO {
     double netFlow;
 
     List<TransactionDTO> transactions;
-
 }

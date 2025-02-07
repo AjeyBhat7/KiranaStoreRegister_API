@@ -5,20 +5,21 @@ import com.jar.kiranaregister.enums.Interval;
 import com.jar.kiranaregister.enums.TransactionType;
 import com.jar.kiranaregister.model.DTOModel.ReportDTO;
 import com.jar.kiranaregister.model.DTOModel.TransactionDTO;
-import com.jar.kiranaregister.model.Product;
 import com.jar.kiranaregister.service.ReportService;
 import com.jar.kiranaregister.service.TransactionService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 
 @Service
 public class ReportServiceImplementation implements ReportService {
 
+    private final TransactionService transactionService;
+
     @Autowired
-    private TransactionService transactionService;
+    public ReportServiceImplementation(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     @Override
     public ReportDTO generateReport(String interval) {
@@ -27,19 +28,18 @@ public class ReportServiceImplementation implements ReportService {
 
         ReportDTO reportDTO = new ReportDTO();
 
-//        fetch transaction
-        List<TransactionDTO> transactions =  transactionService.fetchTransactionsByInterval(requiredInterval);
-
+        //        fetch transaction
+        List<TransactionDTO> transactions =
+                transactionService.fetchTransactionsByInterval(requiredInterval);
 
         double credit = 0;
         double debit = 0;
-        double netFlow = 0;
 
-        for(TransactionDTO transaction : transactions) {
-            if(transaction.getTransactionType() == TransactionType.CREDIT) {
+        for (TransactionDTO transaction : transactions) {
+            if (transaction.getTransactionType() == TransactionType.CREDIT) {
                 credit += transaction.getAmount();
             }
-            if(transaction.getTransactionType() == TransactionType.DEBIT) {
+            if (transaction.getTransactionType() == TransactionType.DEBIT) {
                 debit += transaction.getAmount();
             }
         }
@@ -59,12 +59,11 @@ public class ReportServiceImplementation implements ReportService {
 
     private Interval validateInterval(String interval) {
 
-        try{
+        try {
             return Interval.valueOf(interval.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid interval: " + interval);
         }
-
     }
 
     private Currency validateCurrency(String currency) {
@@ -74,5 +73,4 @@ public class ReportServiceImplementation implements ReportService {
             throw new IllegalArgumentException("Invalid currency: " + currency);
         }
     }
-
 }

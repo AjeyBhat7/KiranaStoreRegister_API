@@ -4,11 +4,9 @@ import com.jar.kiranaregister.enums.Currency;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.Date;
 import java.util.UUID;
-
+import lombok.*;
 
 @Entity
 @Data
@@ -19,14 +17,15 @@ public class Transaction {
     @Column(name = "transaction_id")
     private UUID transactionId;
 
-//    private long customerId;
+    //    private long customerId;
 
-//    private long billId;
+    //    private long billId;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
     private Date transactionTime;
+
     private Double amount;
 
     @Enumerated(EnumType.STRING)
@@ -35,7 +34,5 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
-
-
-//    private long refundDetailsId;
+    //    private long refundDetailsId;
 }

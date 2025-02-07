@@ -1,6 +1,5 @@
 package com.jar.kiranaregister.model.DTOModel;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

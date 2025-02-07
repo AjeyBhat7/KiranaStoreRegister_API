@@ -1,4 +1,3 @@
 package com.jar.kiranaregister.model;
 
-public class Product {
-}
+public class Product {}
