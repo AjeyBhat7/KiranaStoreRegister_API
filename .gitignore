@@ -4,6 +4,10 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+docker-compose.yml
+
+### System MAC ####
+.DS_Store
 
 ### STS ###
 .apt_generated
@@ -13,6 +17,7 @@ build/
 .settings
 .springBeans
 .sts4-cache
+
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
@@ -35,3 +40,17 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Java Version ###
+.java-version
+gradle.properties
+
+java_pid*.*
+qodana.yaml
+
+### Generated Files ###
+src/main/generated/
+/changejar-0.0.1-SNAPSHOT/
+/application.jsa
+cds.log
+cds.log.*
