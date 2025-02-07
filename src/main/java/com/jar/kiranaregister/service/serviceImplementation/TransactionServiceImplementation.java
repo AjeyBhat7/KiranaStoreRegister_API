@@ -15,6 +15,8 @@ import com.jar.kiranaregister.service.TransactionService;
 import com.jar.kiranaregister.utils.TransactionUtils;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.jar.kiranaregister.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +33,11 @@ public class TransactionServiceImplementation implements TransactionService {
         this.fxRatesService = fxRatesService;
     }
 
+
+
     public TransactionStatus addTransaction(
             TransactionRequest request, TransactionType transactionType) {
-        Currency currency = validateCurrency(request.getCurrency());
+        Currency currency = ValidationUtils.validateCurrency(request.getCurrency());
 
         if (currency == null) {
             throw new IllegalArgumentException("Invalid currency");
@@ -52,21 +56,30 @@ public class TransactionServiceImplementation implements TransactionService {
         return TransactionStatus.SUCCESSFUL;
     }
 
+
+
+
     @Override
     public List<TransactionDTO> getAllTransactions(String targetCurrency) {
 
         return transactionRepository.findAll().stream()
-                .map(transaction -> convertTransactionCurrency(transaction, targetCurrency))
+                .map(transaction -> convertTransactionsCurrency(transaction, targetCurrency))
                 .collect(Collectors.toList());
     }
+
+
+
 
     @Override
     public TransactionDTO getTransactionById(UUID id, String targetCurrency) {
         return transactionRepository
                 .findById(id)
-                .map(transaction -> convertTransactionCurrency(transaction, targetCurrency))
+                .map(transaction -> convertTransactionsCurrency(transaction, targetCurrency))
                 .orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
     }
+
+
+
 
     @Override
     public void deleteTransaction(UUID id) {
@@ -76,6 +89,8 @@ public class TransactionServiceImplementation implements TransactionService {
         transactionRepository.deleteById(id);
     }
 
+
+
     @Override
     public List<TransactionDTO> fetchTransactionsByInterval(Interval interval) {
         Date fromDate = getStartDate(interval);
@@ -84,12 +99,18 @@ public class TransactionServiceImplementation implements TransactionService {
         return transactions.stream().map(TransactionUtils::mapToDTO).collect(Collectors.toList());
     }
 
-    private TransactionDTO convertTransactionCurrency(
+
+
+    //    helper functions
+
+    private TransactionDTO convertTransactionsCurrency(
             Transaction transaction, String targetCurrency) {
+
         if (targetCurrency == null
                 || targetCurrency.equalsIgnoreCase(String.valueOf(transaction.getCurrency()))) {
             return mapToDTO(transaction);
         }
+
         double convertedAmount = getConvertedAmount(transaction, targetCurrency);
 
         transaction.setAmount(convertedAmount);
@@ -99,6 +120,7 @@ public class TransactionServiceImplementation implements TransactionService {
         transactionDTO.setCurrency(java.util.Currency.getInstance(targetCurrency));
         return transactionDTO;
     }
+
 
     private double getConvertedAmount(Transaction transaction, String targetCurrency) {
 
@@ -115,13 +137,7 @@ public class TransactionServiceImplementation implements TransactionService {
         return usdAmount * exchangeRates.get(targetCurrency.toUpperCase());
     }
 
-    private Currency validateCurrency(String currency) {
-        try {
-            return Currency.valueOf(currency.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid currency: " + currency);
-        }
-    }
+
 
     private Date getStartDate(Interval interval) {
         Calendar calendar = Calendar.getInstance();
