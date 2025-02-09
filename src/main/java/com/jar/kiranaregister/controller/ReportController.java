@@ -27,9 +27,9 @@ public class ReportController {
     }
 
     @PostMapping("GenerateReport")
-    public ResponseEntity<?> generateReport(@RequestParam String interval) {
+    public ResponseEntity<?> generateReport(@RequestParam String interval, @RequestParam String currency) {
 
-        reportService.generateReport(interval);
+        reportService.generateReport(interval, currency);
 
         return new ResponseEntity<>("Report is being generated, please wait", HttpStatus.OK);
     }

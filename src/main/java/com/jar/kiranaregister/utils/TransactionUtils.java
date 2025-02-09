@@ -19,7 +19,7 @@ public class TransactionUtils {
         td.setId(transaction.getTransactionId());
         td.setTransactionType(transaction.getTransactionType());
         td.setStatus(transaction.getStatus());
-        td.setCurrency(Currency.getInstance(transaction.getCurrency().name()));
+        td.setCurrencyName(transaction.getCurrencyName());
 
         return td;
     }

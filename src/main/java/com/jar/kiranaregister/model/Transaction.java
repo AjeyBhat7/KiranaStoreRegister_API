@@ -1,6 +1,6 @@
 package com.jar.kiranaregister.model;
 
-import com.jar.kiranaregister.enums.Currency;
+import com.jar.kiranaregister.enums.CurrencyName;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import jakarta.persistence.*;
@@ -29,7 +29,7 @@ public class Transaction {
     private Double amount;
 
     @Enumerated(EnumType.STRING)
-    private Currency currency;
+    private CurrencyName currencyName;
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;

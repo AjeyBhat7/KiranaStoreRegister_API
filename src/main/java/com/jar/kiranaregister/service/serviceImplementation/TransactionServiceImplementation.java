@@ -2,7 +2,7 @@ package com.jar.kiranaregister.service.serviceImplementation;
 
 import static com.jar.kiranaregister.utils.TransactionUtils.mapToDTO;
 
-import com.jar.kiranaregister.enums.Currency;
+import com.jar.kiranaregister.enums.CurrencyName;
 import com.jar.kiranaregister.enums.Interval;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
@@ -37,16 +37,16 @@ public class TransactionServiceImplementation implements TransactionService {
 
     public TransactionStatus addTransaction(
             TransactionRequest request, TransactionType transactionType) {
-        Currency currency = ValidationUtils.validateCurrency(request.getCurrency());
+        CurrencyName currencyName = ValidationUtils.validateCurrency(request.getCurrency());
 
-        if (currency == null) {
+        if (currencyName == null) {
             throw new IllegalArgumentException("Invalid currency");
         }
 
         Transaction transaction = new Transaction();
 
         transaction.setAmount(request.getAmount());
-        transaction.setCurrency(currency);
+        transaction.setCurrencyName(currencyName);
         transaction.setStatus(TransactionStatus.SUCCESSFUL);
         transaction.setTransactionType(transactionType);
         transaction.setTransactionTime(new Date());
@@ -107,7 +107,7 @@ public class TransactionServiceImplementation implements TransactionService {
             Transaction transaction, String targetCurrency) {
 
         if (targetCurrency == null
-                || targetCurrency.equalsIgnoreCase(String.valueOf(transaction.getCurrency()))) {
+                || targetCurrency.equalsIgnoreCase(String.valueOf(transaction.getCurrencyName()))) {
             return mapToDTO(transaction);
         }
 
@@ -117,7 +117,7 @@ public class TransactionServiceImplementation implements TransactionService {
 
         TransactionDTO transactionDTO = mapToDTO(transaction);
 
-        transactionDTO.setCurrency(java.util.Currency.getInstance(targetCurrency));
+        transactionDTO.setCurrencyName(CurrencyName.valueOf(targetCurrency));
         return transactionDTO;
     }
 
@@ -133,7 +133,7 @@ public class TransactionServiceImplementation implements TransactionService {
 
         double usdAmount =
                 transaction.getAmount()
-                        / exchangeRates.get(String.valueOf(transaction.getCurrency()));
+                        / exchangeRates.get(String.valueOf(transaction.getCurrencyName()));
         return usdAmount * exchangeRates.get(targetCurrency.toUpperCase());
     }
 
