@@ -17,8 +17,6 @@ public class FxRatesService {
     public FxRatesResponse getLatestFxRates() {
         String url = "https://api.fxratesapi.com/latest";
 
-        FxRatesResponse response = restTemplate.getForObject(url, FxRatesResponse.class);
-
-        return response;
+        return restTemplate.getForObject(url, FxRatesResponse.class);
     }
 }
