@@ -1,6 +1,6 @@
 package com.jar.kiranaregister.enums;
 
-public enum Currency {
+public enum CurrencyName {
     ADA,
     AED,
     AFN,
