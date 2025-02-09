@@ -1,6 +1,5 @@
 package com.jar.kiranaregister.service.serviceImplementation;
 
-import com.jar.kiranaregister.enums.Currency;
 import com.jar.kiranaregister.enums.Interval;
 import com.jar.kiranaregister.enums.TransactionType;
 import com.jar.kiranaregister.model.DTOModel.ReportDTO;
@@ -10,6 +9,8 @@ import com.jar.kiranaregister.service.TransactionService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static com.jar.kiranaregister.utils.ValidationUtils.validateInterval;
 
 @Service
 public class ReportServiceImplementation implements ReportService {
@@ -57,20 +58,5 @@ public class ReportServiceImplementation implements ReportService {
         return generateReport(interval);
     }
 
-    private Interval validateInterval(String interval) {
 
-        try {
-            return Interval.valueOf(interval.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid interval: " + interval);
-        }
-    }
-
-    private Currency validateCurrency(String currency) {
-        try {
-            return Currency.valueOf(currency.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid currency: " + currency);
-        }
-    }
 }
