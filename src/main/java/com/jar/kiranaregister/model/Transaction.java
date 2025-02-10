@@ -3,9 +3,11 @@ package com.jar.kiranaregister.model;
 import com.jar.kiranaregister.enums.CurrencyName;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
-import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.UUID;
+
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -34,5 +36,6 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
+    private Long customerId;
     //    private long refundDetailsId;
 }
