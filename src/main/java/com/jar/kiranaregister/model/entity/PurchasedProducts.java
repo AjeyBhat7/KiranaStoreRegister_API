@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.model;
+package com.jar.kiranaregister.model.entity;
 
 public class PurchasedProducts {
     //
