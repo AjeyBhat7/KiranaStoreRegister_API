@@ -1,6 +1,6 @@
 package com.jar.kiranaregister.service.serviceImplementation;
 
-import com.jar.kiranaregister.model.FxRatesResponse;
+import com.jar.kiranaregister.model.responseModel.FxRatesResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
