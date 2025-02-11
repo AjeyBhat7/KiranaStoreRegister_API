@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class TransactionDTO {
 
     private UUID id;
+    private String userId;
     private TransactionStatus status;
     private Date transactionTime;
     private Double amount;

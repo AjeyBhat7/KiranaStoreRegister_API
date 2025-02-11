@@ -3,8 +3,7 @@ package com.jar.kiranaregister.utils;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import com.jar.kiranaregister.model.DTOModel.TransactionDTO;
-import com.jar.kiranaregister.model.Transaction;
-import java.util.Currency;
+import com.jar.kiranaregister.model.entity.Transaction;
 import java.util.Date;
 import java.util.UUID;
 
