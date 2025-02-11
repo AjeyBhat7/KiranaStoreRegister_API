@@ -1,15 +1,13 @@
 package com.jar.kiranaregister.DAO;
 
-import aj.org.objectweb.asm.commons.Remapper;
 import com.jar.kiranaregister.model.entity.Transaction;
 import com.jar.kiranaregister.repository.TransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionDAO {
@@ -21,8 +19,8 @@ public class TransactionDAO {
         this.transactionRepository = transactionRepository;
     }
 
-
     public void save(Transaction transaction) {
+        transactionRepository.save(transaction);
     }
 
     public List<Transaction> findByUserId(String username) {
