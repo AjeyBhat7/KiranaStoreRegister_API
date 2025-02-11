@@ -17,23 +17,15 @@ import java.util.stream.Collectors;
 public class UserServiceImplementation implements UserService {
 
     private final UserDAO userDao;
-    private final UserRepository userRepository;
+
 
     @Autowired
-    public UserServiceImplementation(UserDAO userDao, UserRepository userRepository) {
+    public UserServiceImplementation(UserDAO userDao) {
         this.userDao = userDao;
-        this.userRepository = userRepository;
     }
 
-    @Override
-    public List<String> getUserRolesByPhoneNumber(String phoneNumber) {
-        Optional<UserEntity> user = userRepository.findByPhoneNumber(phoneNumber);
 
-        if (user == null) {
-            throw new RuntimeException("User not found: " + phoneNumber);
-        }
-        return user.get().getRoles().stream().map(Enum::name).collect(Collectors.toList());
-    }
+
 
     @Override
     public UserDto save(UserDto userDto) {

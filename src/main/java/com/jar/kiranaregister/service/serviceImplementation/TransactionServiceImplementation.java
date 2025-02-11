@@ -2,6 +2,7 @@ package com.jar.kiranaregister.service.serviceImplementation;
 
 import static com.jar.kiranaregister.utils.TransactionUtils.mapToDTO;
 
+import com.jar.kiranaregister.DAO.TransactionDAO;
 import com.jar.kiranaregister.enums.CurrencyName;
 import com.jar.kiranaregister.enums.Interval;
 import com.jar.kiranaregister.enums.TransactionStatus;
@@ -10,7 +11,6 @@ import com.jar.kiranaregister.model.DTOModel.TransactionDTO;
 import com.jar.kiranaregister.model.responseModel.FxRatesResponse;
 import com.jar.kiranaregister.model.entity.Transaction;
 import com.jar.kiranaregister.model.requestObj.TransactionRequest;
-import com.jar.kiranaregister.repository.TransactionRepository;
 import com.jar.kiranaregister.service.TransactionService;
 import com.jar.kiranaregister.utils.TransactionUtils;
 import com.jar.kiranaregister.utils.ValidationUtils;
@@ -24,15 +24,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionServiceImplementation implements TransactionService {
 
-    private final TransactionRepository transactionRepository;
+    private final TransactionDAO transactionDAO;
     private final FxRatesService fxRatesService;
 
     @Autowired
-    public TransactionServiceImplementation(
-            TransactionRepository transactionRepository, FxRatesService fxRatesService) {
-        this.transactionRepository = transactionRepository;
+    public TransactionServiceImplementation(TransactionDAO transactionDAO, FxRatesService fxRatesService) {
+        this.transactionDAO = transactionDAO;
         this.fxRatesService = fxRatesService;
     }
+
 
     public TransactionStatus addTransaction(
             TransactionRequest request, TransactionType transactionType) {
@@ -54,7 +54,7 @@ public class TransactionServiceImplementation implements TransactionService {
         transaction.setTransactionType(transactionType);
         transaction.setTransactionTime(new Date());
 
-        transactionRepository.save(transaction);
+        transactionDAO.save(transaction);
 
         return TransactionStatus.SUCCESSFUL;
     }
@@ -64,7 +64,7 @@ public class TransactionServiceImplementation implements TransactionService {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return transactionRepository.findByUserId(userDetails.getUsername()).stream()
+        return transactionDAO.findByUserId(userDetails.getUsername()).stream()
                 .map(transaction -> convertTransactionsCurrency(transaction, targetCurrency))
                 .collect(Collectors.toList());
     }
@@ -74,7 +74,7 @@ public class TransactionServiceImplementation implements TransactionService {
     public TransactionDTO getTransactionById(UUID id, String targetCurrency) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return transactionRepository
+        return transactionDAO
                 .findByTransactionIdAndUserId(id,userDetails.getUsername())
                 .map(transaction -> convertTransactionsCurrency(transaction, targetCurrency))
                 .orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
@@ -82,16 +82,16 @@ public class TransactionServiceImplementation implements TransactionService {
 
     @Override
     public void deleteTransaction(UUID id) {
-        if (!transactionRepository.existsById(id)) {
+        if (!transactionDAO.existsById(id)) {
             throw new IllegalArgumentException("Transaction not found");
         }
-        transactionRepository.deleteById(id);
+        transactionDAO.deleteById(id);
     }
 
     @Override
     public List<TransactionDTO> fetchTransactionsByInterval(Interval interval) {
         Date fromDate = getStartDate(interval);
-        List<Transaction> transactions = transactionRepository.findByTransactionTimeAfter(fromDate);
+        List<Transaction> transactions = transactionDAO.findByTransactionTimeAfter(fromDate);
 
         return transactions.stream().map(TransactionUtils::mapToDTO).collect(Collectors.toList());
     }
