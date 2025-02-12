@@ -53,6 +53,11 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRateLimitException(RuntimeException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
+    }
+
     public record ErrorResponse(String error, List<String> details) {}
     public record ErrorResponseList(String error, List<String> details) {}
 }
