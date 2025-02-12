@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.configaration;
+package com.jar.kiranaregister.filters;
 
 import com.jar.kiranaregister.service.serviceImplementation.CustomUserDetailsService;
 import com.jar.kiranaregister.utils.JwtUtil;
