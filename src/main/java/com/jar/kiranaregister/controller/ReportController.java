@@ -5,6 +5,7 @@ import com.jar.kiranaregister.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class ReportController {
         this.reportService = reportService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("fetchReport")
     public ResponseEntity<?> fetchReport(
             @RequestParam String interval, @RequestParam(required = false) String currency) {
@@ -27,9 +29,10 @@ public class ReportController {
     }
 
     @PostMapping("GenerateReport")
-    public ResponseEntity<?> generateReport(@RequestParam String interval) {
+    public ResponseEntity<?> generateReport(
+            @RequestParam String interval, @RequestParam String currency) {
 
-        reportService.generateReport(interval);
+        reportService.generateReport(interval, currency);
 
         return new ResponseEntity<>("Report is being generated, please wait", HttpStatus.OK);
     }

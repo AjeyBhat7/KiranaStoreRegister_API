@@ -10,6 +10,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +25,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
+
     @PostMapping("credit")
     public ResponseEntity<?> createCreditTransaction(@RequestBody TransactionRequest request) {
         try {
@@ -35,6 +38,7 @@ public class TransactionController {
             return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @PostMapping("debit")
     public ResponseEntity<?> createDebitTransaction(@RequestBody TransactionRequest request) {
@@ -50,6 +54,8 @@ public class TransactionController {
         }
     }
 
+
+
     @GetMapping("getAll")
     public ResponseEntity<?> getAllTransactions(@RequestParam(required = false) String currency) {
 
@@ -61,10 +67,17 @@ public class TransactionController {
         }
     }
 
+
+
     @GetMapping("getTransactionById")
     public ResponseEntity<?> getTransactionById(
             @RequestParam UUID id, @RequestParam(required = false) String currency) {
         try {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            System.out.println(userDetails.getUsername());
+            System.out.println(userDetails.getAuthorities());
+
             TransactionDTO transaction = transactionService.getTransactionById(id, currency);
             return new ResponseEntity<>(transaction, HttpStatus.OK);
         } catch (IllegalArgumentException e) {

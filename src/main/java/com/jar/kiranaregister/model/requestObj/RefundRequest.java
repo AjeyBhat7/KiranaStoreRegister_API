@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.model;
+package com.jar.kiranaregister.model.requestObj;
 
 public class RefundRequest {
 

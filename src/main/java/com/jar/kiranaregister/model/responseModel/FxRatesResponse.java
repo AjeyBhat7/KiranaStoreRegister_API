@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.model;
+package com.jar.kiranaregister.model.responseModel;
 
 import java.util.Map;
 import lombok.Data;

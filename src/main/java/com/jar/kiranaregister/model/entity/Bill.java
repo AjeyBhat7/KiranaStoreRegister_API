@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.model;
+package com.jar.kiranaregister.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
