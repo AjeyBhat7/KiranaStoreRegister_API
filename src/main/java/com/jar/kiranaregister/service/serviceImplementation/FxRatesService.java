@@ -1,6 +1,7 @@
 package com.jar.kiranaregister.service.serviceImplementation;
 
 
+import com.jar.kiranaregister.AOP.RateLimited;
 import com.jar.kiranaregister.model.responseModel.FxRatesResponse;
 import com.jar.kiranaregister.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,11 @@ public class FxRatesService {
         this.cacheService = cacheService;
     }
 
+
+    @RateLimited(bucketQualifier = "FxRatesRateLimitBucket")
     public FxRatesResponse getLatestFxRates() {
         String url = "https://api.fxratesapi.com/latest";
         String cacheKey = "FxRates";
-
-
 
         if (cacheService.checkKeyExists(cacheKey)) {
             String fxRatesResponseStr = cacheService.getValueFromRedis(cacheKey);
