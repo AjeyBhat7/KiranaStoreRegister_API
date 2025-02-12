@@ -1,5 +1,6 @@
 package com.jar.kiranaregister.controller;
 
+import com.jar.kiranaregister.AOP.RateLimited;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import com.jar.kiranaregister.model.DTOModel.TransactionDTO;
