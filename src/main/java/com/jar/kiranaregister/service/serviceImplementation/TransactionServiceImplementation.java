@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionServiceImplementation implements TransactionService {
 
-    private final TransactionDAO transactionDAO;
+    private final TransactionDAO  transactionDAO;
     private final FxRatesService fxRatesService;
 
     @Autowired

@@ -1,5 +1,6 @@
 package com.jar.kiranaregister.controller;
 
+import com.jar.kiranaregister.AOP.RateLimited;
 import com.jar.kiranaregister.model.DTOModel.UserDto;
 import com.jar.kiranaregister.model.requestObj.LoginRequest;
 import com.jar.kiranaregister.model.responseModel.UserResponseEntity;
@@ -27,6 +28,7 @@ public class UserController {
         this.authService = authService;
     }
 
+    @RateLimited(bucketName = "LoginRateLimiter")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest user) {
         try {
@@ -35,7 +37,8 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
     }
-
+    
+    @RateLimited(bucketName = "LoginRateLimiter")
     @PostMapping("/register")
     public ResponseEntity<UserResponseEntity> register(@RequestBody UserDto user) {
         try {
