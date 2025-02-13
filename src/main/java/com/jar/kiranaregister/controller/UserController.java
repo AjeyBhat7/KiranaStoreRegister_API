@@ -6,6 +6,8 @@ import com.jar.kiranaregister.model.requestObj.LoginRequest;
 import com.jar.kiranaregister.model.responseModel.UserResponseEntity;
 import com.jar.kiranaregister.service.AuthService;
 import com.jar.kiranaregister.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,9 @@ public class UserController {
     private final UserService userService;
     private final AuthService authService;
 
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
@@ -33,6 +38,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginRequest user) {
         try {
             return ResponseEntity.ok(authService.authenticateUser(user));
+
         } catch (BadCredentialsException ex) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
