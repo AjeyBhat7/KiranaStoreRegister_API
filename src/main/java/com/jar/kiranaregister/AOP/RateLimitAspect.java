@@ -21,11 +21,11 @@ public class RateLimitAspect {
         this.applicationContext = applicationContext;
     }
 
-    @Around("@annotation(RateLimited)")
-    public Object handleRateLimiting(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("@annotation(rateLimited)")
+    public Object handleRateLimiting(ProceedingJoinPoint joinPoint, RateLimited rateLimited) throws Throwable {
+
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-        RateLimited rateLimited = method.getAnnotation(RateLimited.class);
 
         String bucketName = rateLimited.bucketName();
         Bucket bucket;
@@ -39,7 +39,7 @@ public class RateLimitAspect {
         if (bucket.tryConsume(1)) {
             return joinPoint.proceed();
         } else {
-            throw new RateLimitExceededException("Rate limit exceeded for " + bucketName);
+            throw new RateLimitExceededException("too many requests");
         }
     }
 
