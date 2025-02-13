@@ -31,4 +31,11 @@ public class RateLimitConfig {
                 .addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofSeconds(3))))
                 .build();
     }
+
+    @Bean(name = "RecordGenerationRateLimiter")
+    public Bucket RecordGenarationRateLimitBucket() {
+        return Bucket4j.builder()
+                .addLimit(Bandwidth.classic(10, Refill.greedy(10, Duration.ofMinutes(1))))
+                .build();
+    }
 }

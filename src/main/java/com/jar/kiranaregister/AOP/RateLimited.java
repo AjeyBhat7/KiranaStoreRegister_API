@@ -5,5 +5,5 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RateLimited {
-    String bucketQualifier() default "defaultRateLimitBucket";
+    String bucketName(); // Reference bucket by name
 }
