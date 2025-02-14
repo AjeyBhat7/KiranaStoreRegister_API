@@ -1,5 +1,6 @@
 package com.jar.kiranaregister.exception;
 
+import com.nimbusds.oauth2.sdk.util.singleuse.AlreadyUsedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,54 +10,52 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(
-                new ErrorResponse("Validation failed", errors),
-                HttpStatus.BAD_REQUEST
-        );
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        return new ResponseEntity<>(
-                new ErrorResponse("Database error", Collections.singletonList(ex.getMostSpecificCause().getMessage())),
-                HttpStatus.CONFLICT
-        );
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
-        return new ResponseEntity<>(
-                new ErrorResponse("Authentication failed", Collections.singletonList("Invalid credentials")),
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException e) {
+
+        return new ResponseEntity<>(new ErrorResponse("Authentication failed", Collections.singletonList("Invalid credentials")),
                 HttpStatus.UNAUTHORIZED
         );
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralExceptions(Exception ex) {
+    public ResponseEntity<ErrorResponse> handleGeneralExceptions(Exception e) {
         return new ResponseEntity<>(
-                new ErrorResponse("Internal server error", Collections.singletonList(ex.getMessage())),
+                new ErrorResponse("Internal server error", Collections.singletonList(e.getMessage())),
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRateLimitException(RuntimeException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
+        if(e.getMessage() == "Rate limit exceeded. Try again later.")
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
+
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        return new ResponseEntity<>("user already exists", HttpStatus.BAD_REQUEST);
+    }
+
 
     public record ErrorResponse(String error, List<String> details) {}
     public record ErrorResponseList(String error, List<String> details) {}

@@ -24,9 +24,6 @@ public class RateLimitAspect {
     @Around("@annotation(rateLimited)")
     public Object handleRateLimiting(ProceedingJoinPoint joinPoint, RateLimited rateLimited) throws Throwable {
 
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-
         String bucketName = rateLimited.bucketName();
         Bucket bucket;
 
