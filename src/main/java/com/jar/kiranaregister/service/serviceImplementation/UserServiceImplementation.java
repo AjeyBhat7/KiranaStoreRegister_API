@@ -6,6 +6,9 @@ import com.jar.kiranaregister.model.DTOModel.UserDto;
 import com.jar.kiranaregister.model.entity.UserEntity;
 import com.jar.kiranaregister.repository.UserRepository;
 import com.jar.kiranaregister.service.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +17,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserServiceImplementation implements UserService {
 
     private final UserDAO userDao;
-
 
     @Autowired
     public UserServiceImplementation(UserDAO userDao) {
@@ -25,18 +28,32 @@ public class UserServiceImplementation implements UserService {
     }
 
 
-
+    /**
+     * Saves a new user to the database.
+     *
+     * @param userDto DTO containing user details.
+     * @return The saved user as a DTO.
+     */
 
     @Override
     public UserDto save(UserDto userDto) {
+
+        log.info("Attempting to save user: {}", userDto.getUsername());
 
         UserEntity userEntity = toUserEntity(userDto);
 
         UserEntity savedUser = userDao.save(userEntity);
 
+        log.info("User saved successfully: {}", savedUser.getId());
         return toUserDto(savedUser);
     }
 
+    /**
+     * Converts a UserDto to a UserEntity for db.
+     *
+     * @param userDto The DTO to convert.
+     * @return The converted UserEntity.
+     */
     private UserEntity toUserEntity(UserDto userDto) {
         UserEntity userEntity = new UserEntity();
         userEntity.setId(userDto.getId());
@@ -60,7 +77,12 @@ public class UserServiceImplementation implements UserService {
         return userEntity;
     }
 
-
+    /**
+     * Converts a UserEntity to a UserDto
+     *
+     * @param userEntity The entity to convert.
+     * @return The converted UserDto.
+     */
     private UserDto toUserDto(UserEntity userEntity) {
         UserDto userDto = new UserDto();
         userDto.setId(userEntity.getId());
