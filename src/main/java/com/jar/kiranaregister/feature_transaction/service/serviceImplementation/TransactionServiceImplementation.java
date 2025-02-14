@@ -151,7 +151,6 @@ public class TransactionServiceImplementation implements TransactionService {
     @Override
     public TransactionDetails getTransactionDetailsByTransactionId(UUID id, String targetCurrency) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("Fetching transaction with ID: {} for user: {} and target currency: {}", id, userDetails.getUsername(), targetCurrency);
 
         return transactionDAO.findByTransactionIdAndUserId(id, userDetails.getUsername())
                 .map(transaction -> {
@@ -201,17 +200,10 @@ public class TransactionServiceImplementation implements TransactionService {
 
         double convertedAmount = getConvertedAmount(transaction.getAmount(), transaction.getCurrencyName(), targetCurrency);
 
-        Transaction convertedTransaction = new Transaction();
-        convertedTransaction.setTransactionId(transaction.getTransactionId());
-        convertedTransaction.setUserId(transaction.getUserId());
-        convertedTransaction.setAmount(convertedAmount);
-        convertedTransaction.setCurrencyName(CurrencyName.valueOf(targetCurrency));
-        convertedTransaction.setTransactionType(transaction.getTransactionType());
-        convertedTransaction.setStatus(transaction.getStatus());
-        convertedTransaction.setTransactionTime(transaction.getTransactionTime());
-        convertedTransaction.setBillId(transaction.getBillId());
+        transaction.setAmount(convertedAmount);
+        transaction.setCurrencyName(CurrencyName.valueOf(targetCurrency));
 
-        return convertedTransaction;
+        return transaction;
     }
 
     private Bill convertBillCurrency(Bill bill, String targetCurrency) {
@@ -230,14 +222,14 @@ public class TransactionServiceImplementation implements TransactionService {
                 })
                 .collect(Collectors.toList());
 
-        Bill convertedBill = new Bill();
-        convertedBill.setBillId(bill.getBillId());
-        convertedBill.setPurchasedProducts(convertedProducts);
+
+        bill.setBillId(bill.getBillId());
+        bill.setPurchasedProducts(convertedProducts);
 
         double convertedTotalAmount = getConvertedAmount(bill.getTotalAmount(), CurrencyName.USD, targetCurrency);
-        convertedBill.setTotalAmount(convertedTotalAmount);
+        bill.setTotalAmount(convertedTotalAmount);
 
-        return convertedBill;
+        return bill;
     }
 
     private double getConvertedAmount(double amount, CurrencyName fromCurrency, String targetCurrency) {

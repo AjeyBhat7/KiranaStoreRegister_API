@@ -48,7 +48,7 @@ public class AuthServiceImplementation implements AuthService {
         String userId = Optional.ofNullable(user).map(UserEntity::getId).orElse(null);
 
         if (userId == null) {
-            log.warn("Authentication failed: User not found for phone number: {}", request.getPhoneNumber());
+            log.warn(" User not found for phone number: {}", request.getPhoneNumber());
             throw new UsernameNotFoundException("User not found for the phone number");
         }
 
@@ -61,7 +61,7 @@ public class AuthServiceImplementation implements AuthService {
         // Retrieve user details
         UserEntity userEntity = userRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> {
-                    log.error("Unexpected error: User not found .");
+                    log.error(" User not found .");
                     return new UsernameNotFoundException("User not found");
                 });
 
