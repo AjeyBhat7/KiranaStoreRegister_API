@@ -48,6 +48,11 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	// implementation 'org.apache.kafka:kafka-clients:3.9.0'
+
 
 //	dev
 	compileOnly 'org.projectlombok:lombok'

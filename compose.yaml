@@ -61,6 +61,8 @@ services:
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # Change replication factor to 1 for a single broker
+      KAFKA_CREATE_TOPICS: "jar-events:3:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
