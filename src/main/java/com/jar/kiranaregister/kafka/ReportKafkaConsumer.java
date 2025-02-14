@@ -24,12 +24,12 @@ public class ReportKafkaConsumer {
     @KafkaListener(topics = "${kafka.topic.report}", groupId = "report-group")
     public void processReport(String message) {
         try {
+            System.out.println(message);
             ReportRequest request = StringUtils.fromJson(message, ReportRequest.class);
-
             reportService.generateReport(request.getInterval(), request.getCurrency());
 
         } catch (Exception e) {
-
+            System.out.println(message + ": " + e.getMessage());
 //            logger.error();
         }
     }
