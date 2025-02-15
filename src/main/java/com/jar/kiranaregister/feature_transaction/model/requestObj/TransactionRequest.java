@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionRequest {
+
     private double amount;
     private String currency;
 

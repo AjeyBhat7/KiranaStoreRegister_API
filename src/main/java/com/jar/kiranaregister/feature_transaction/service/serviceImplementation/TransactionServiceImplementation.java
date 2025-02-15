@@ -133,11 +133,15 @@ public class TransactionServiceImplementation implements TransactionService {
         List<Transaction> transactions = transactionDAO.findByUserId(userDetails.getUsername());
 
         List<TransactionDetails> transactionDetailsList = transactions.stream().map(transaction -> {
-                    Bill bill = billService.getBill(transaction.getBillId());
-                    Bill convertedBill = convertBillCurrency(bill, targetCurrency);
-                    Transaction convertedTransaction = convertTransactionCurrency(transaction, targetCurrency);
-                    return mapToTransactionDetails(convertedTransaction, convertedBill);
-                }).collect(Collectors.toList());
+                 Bill bill = null;
+                 if(transaction.getTransactionType().equals(TransactionType.CREDIT)) {
+                        bill = billService.getBill(transaction.getBillId());
+                 }
+                 Bill convertedBill = convertBillCurrency(bill, targetCurrency);
+
+                 Transaction convertedTransaction = convertTransactionCurrency(transaction, targetCurrency);
+                 return mapToTransactionDetails(convertedTransaction, convertedBill);
+        }).collect(Collectors.toList());
 
         log.info("Retrieved {} transactions for user: {}", transactionDetailsList.size(), userDetails.getUsername());
         return transactionDetailsList;
