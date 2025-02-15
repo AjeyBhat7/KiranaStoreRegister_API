@@ -9,7 +9,7 @@ import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import com.jar.kiranaregister.feature_transaction.model.DTOModel.PurchasedProductsDetails;
 import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDTO;
-import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDetails;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.entity.Bill;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransactionRequest;
 import com.jar.kiranaregister.feature_fxrates.model.responseObj.FxRatesResponse;
@@ -18,7 +18,7 @@ import com.jar.kiranaregister.feature_transaction.model.requestObj.TransactionRe
 import com.jar.kiranaregister.feature_transaction.service.BillService;
 import com.jar.kiranaregister.feature_transaction.service.TransactionService;
 import com.jar.kiranaregister.feature_transaction.utils.TransactionUtils;
-import com.jar.kiranaregister.feature_transaction.utils.ValidationUtils;
+import com.jar.kiranaregister.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,11 @@ public class TransactionServiceImplementation implements TransactionService {
     }
 
 
-
+    /**
+     * creates a new transaction and generates the bill for purchased products
+     * @param request
+     * @return
+     */
 
     @Override
     public TransactionStatus addTransaction(TransactionRequest request) {
@@ -66,7 +70,7 @@ public class TransactionServiceImplementation implements TransactionService {
         // Create and save transaction
         Transaction transaction = new Transaction();
         transaction.setUserId(userDetails.getUsername());
-        transaction.setAmount(request.getAmount());
+
         transaction.setCurrencyName(currencyName);
         transaction.setStatus(TransactionStatus.SUCCESSFUL);
         transaction.setTransactionType(TransactionType.CREDIT);
@@ -81,6 +85,11 @@ public class TransactionServiceImplementation implements TransactionService {
     }
 
 
+    /**
+     * creates the debit transaction
+     * @param request
+     * @return
+     */
     @Override
     public TransactionStatus debitTransaction(DebitTransactionRequest request) {
         log.info("Adding  transaction for amount: {} and currency: {}", request.getAmount(), request.getCurrency());
@@ -111,6 +120,11 @@ public class TransactionServiceImplementation implements TransactionService {
         return TransactionStatus.SUCCESSFUL;
     }
 
+    /**
+     * gets the list of transaction
+     * @param targetCurrency
+     * @return transaction status
+     */
 
     @Override
     public List<TransactionDetails> getAllTransactions(String targetCurrency) {
@@ -118,27 +132,30 @@ public class TransactionServiceImplementation implements TransactionService {
 
         List<Transaction> transactions = transactionDAO.findByUserId(userDetails.getUsername());
 
-        List<TransactionDetails> transactionDetailsList = transactions.stream()
-                .map(transaction -> {
+        List<TransactionDetails> transactionDetailsList = transactions.stream().map(transaction -> {
                     Bill bill = billService.getBill(transaction.getBillId());
                     Bill convertedBill = convertBillCurrency(bill, targetCurrency);
                     Transaction convertedTransaction = convertTransactionCurrency(transaction, targetCurrency);
                     return mapToTransactionDetails(convertedTransaction, convertedBill);
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
 
         log.info("Retrieved {} transactions for user: {}", transactionDetailsList.size(), userDetails.getUsername());
         return transactionDetailsList;
     }
 
+    /**
+     * fetches the transaction by id and converts the amount to requested currency
+     * @param id
+     * @param currency
+     * @return trasaction dto
+     */
     @Override
     public TransactionDTO getTransactionById(UUID id, String currency) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         log.info("Fetching transaction with ID: {} for user: {}", id, userDetails.getUsername());
 
-        return transactionDAO.findByTransactionIdAndUserId(id, userDetails.getUsername())
-                .map(transaction -> {
+        return transactionDAO.findByTransactionIdAndUserId(id, userDetails.getUsername()).map(transaction -> {
                     Transaction convertedTransaction = convertTransactionCurrency(transaction, currency);
                     return mapToDTO(convertedTransaction);
                 })
@@ -148,25 +165,33 @@ public class TransactionServiceImplementation implements TransactionService {
     }
 
 
+    /**
+     * fetch the transaction with bill containing all product details
+     * @param id
+     * @param targetCurrency
+     * @return
+     */
+
     @Override
     public TransactionDetails getTransactionDetailsByTransactionId(UUID id, String targetCurrency) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return transactionDAO.findByTransactionIdAndUserId(id, userDetails.getUsername())
-                .map(transaction -> {
+        return transactionDAO.findByTransactionIdAndUserId(id, userDetails.getUsername()).map(transaction -> {
                     Bill bill = billService.getBill(transaction.getBillId());
                     Bill convertedBill = convertBillCurrency(bill, targetCurrency);
                     Transaction convertedTransaction = convertTransactionCurrency(transaction, targetCurrency);
                     return mapToTransactionDetails(convertedTransaction, convertedBill);
-                })
-                .orElseThrow(() -> {
+                }).orElseThrow(() -> {
                     log.warn("Transaction not found with ID: {} for user: {}", id, userDetails.getUsername());
                     return new IllegalArgumentException("Transaction not found");
                 });
     }
 
 
-
+    /**
+     * delete transaction by id
+     * @param id
+     */
     @Override
     public void deleteTransaction(UUID id) {
         log.info("Request to delete transaction with ID: {}", id);
@@ -179,6 +204,12 @@ public class TransactionServiceImplementation implements TransactionService {
         transactionDAO.deleteById(id);
         log.info("Transaction with ID: {} deleted successfully", id);
     }
+
+    /**
+     * fetch the transaction by time interval
+     * @param interval
+     * @return
+     */
 
     @Override
     public List<TransactionDTO> fetchTransactionsByInterval(Interval interval) {
@@ -193,6 +224,14 @@ public class TransactionServiceImplementation implements TransactionService {
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * convert transactions amount to target currency
+     * @param transaction
+     * @param targetCurrency
+     * @return
+     */
+
     private Transaction convertTransactionCurrency(Transaction transaction, String targetCurrency) {
         if (targetCurrency == null || targetCurrency.equalsIgnoreCase(transaction.getCurrencyName().name())) {
             return transaction;
@@ -206,7 +245,14 @@ public class TransactionServiceImplementation implements TransactionService {
         return transaction;
     }
 
+    /**
+     * converts the each products amount to target currency
+     * @param bill
+     * @param targetCurrency
+     * @return
+     */
     private Bill convertBillCurrency(Bill bill, String targetCurrency) {
+
         if (bill == null || targetCurrency == null || bill.getPurchasedProducts().isEmpty()) {
             return bill;
         }
@@ -232,6 +278,13 @@ public class TransactionServiceImplementation implements TransactionService {
         return bill;
     }
 
+    /**
+     * fetch the currency price from fxrates and returns the converted amount
+     * @param amount
+     * @param fromCurrency
+     * @param targetCurrency
+     * @return
+     */
     private double getConvertedAmount(double amount, CurrencyName fromCurrency, String targetCurrency) {
         FxRatesResponse response = fxRatesService.getLatestFxRates();
         Map<String, Double> exchangeRates = response.getRates();

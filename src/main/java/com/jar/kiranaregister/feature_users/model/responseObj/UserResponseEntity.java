@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_transaction.model.responseObj;
+package com.jar.kiranaregister.feature_users.model.responseObj;
 
 import com.jar.kiranaregister.feature_users.model.dto.UserDto;
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;

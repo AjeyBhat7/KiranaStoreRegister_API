@@ -1,8 +1,8 @@
 package com.jar.kiranaregister.kafka;
 
-import com.jar.kiranaregister.feature_transaction.model.requestObj.ReportRequest;
+import com.jar.kiranaregister.feature_report.model.requestObj.ReportRequest;
 import com.jar.kiranaregister.feature_report.service.ReportService;
-import com.jar.kiranaregister.feature_transaction.utils.StringUtils;
+import com.jar.kiranaregister.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;

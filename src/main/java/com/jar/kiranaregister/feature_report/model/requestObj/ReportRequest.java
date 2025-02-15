@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_transaction.model.requestObj;
+package com.jar.kiranaregister.feature_report.model.requestObj;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

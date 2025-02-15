@@ -2,7 +2,7 @@ package com.jar.kiranaregister.feature_report.controller;
 
 import com.jar.kiranaregister.kafka.ReportKafkaProducer;
 import com.jar.kiranaregister.feature_report.model.dto.ReportDTO;
-import com.jar.kiranaregister.feature_transaction.model.requestObj.ReportRequest;
+import com.jar.kiranaregister.feature_report.model.requestObj.ReportRequest;
 import com.jar.kiranaregister.feature_report.service.ReportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

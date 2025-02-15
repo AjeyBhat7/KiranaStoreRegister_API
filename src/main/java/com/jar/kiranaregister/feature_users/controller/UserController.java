@@ -1,8 +1,8 @@
 package com.jar.kiranaregister.feature_users.controller;
 
-import com.jar.kiranaregister.AOP.RateLimited;
+import com.jar.kiranaregister.ratelimiting.AOP.RateLimited;
 import com.jar.kiranaregister.feature_users.model.dto.UserDto;
-import com.jar.kiranaregister.feature_transaction.model.requestObj.LoginRequest;
+import com.jar.kiranaregister.feature_users.model.requestObj.LoginRequest;
 import com.jar.kiranaregister.feature_auth.service.AuthService;
 import com.jar.kiranaregister.feature_users.service.UserService;
 import org.slf4j.Logger;

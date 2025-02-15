@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_transaction.utils;
+package com.jar.kiranaregister.utils;
 
 import com.jar.kiranaregister.enums.CurrencyName;
 import com.jar.kiranaregister.enums.Interval;

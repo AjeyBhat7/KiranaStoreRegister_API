@@ -1,6 +1,6 @@
 package com.jar.kiranaregister.feature_auth.filters;
 
-import com.jar.kiranaregister.feature_transaction.utils.JwtUtil;
+import com.jar.kiranaregister.feature_auth.utils.JwtUtil;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket4j;

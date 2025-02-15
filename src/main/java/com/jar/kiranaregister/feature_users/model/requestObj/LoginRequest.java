@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_transaction.model.requestObj;
+package com.jar.kiranaregister.feature_users.model.requestObj;
 
 import lombok.Data;
 

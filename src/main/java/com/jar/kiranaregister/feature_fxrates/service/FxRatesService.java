@@ -1,9 +1,9 @@
 package com.jar.kiranaregister.feature_fxrates.service;
 
-import com.jar.kiranaregister.AOP.RateLimited;
+import com.jar.kiranaregister.ratelimiting.AOP.RateLimited;
 import com.jar.kiranaregister.feature_fxrates.model.responseObj.FxRatesResponse;
 import com.jar.kiranaregister.cache.service.CacheService;
-import com.jar.kiranaregister.feature_transaction.utils.StringUtils;
+import com.jar.kiranaregister.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_transaction.utils;
+package com.jar.kiranaregister.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;

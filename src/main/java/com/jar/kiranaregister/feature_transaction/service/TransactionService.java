@@ -3,7 +3,7 @@ package com.jar.kiranaregister.feature_transaction.service;
 import com.jar.kiranaregister.enums.Interval;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDTO;
-import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDetails;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransactionRequest;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.TransactionRequest;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_auth.config;
+package com.jar.kiranaregister.configaration;
 
 import com.jar.kiranaregister.feature_auth.filters.JwtFilter;
 import org.springframework.context.annotation.Bean;

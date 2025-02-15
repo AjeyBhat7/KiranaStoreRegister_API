@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.configaration;
+package com.jar.kiranaregister.ratelimiting.config;
 
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;

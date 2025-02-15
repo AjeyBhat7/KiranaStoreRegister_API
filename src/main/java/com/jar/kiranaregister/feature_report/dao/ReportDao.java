@@ -2,7 +2,7 @@ package com.jar.kiranaregister.feature_report.dao;
 
 import com.jar.kiranaregister.feature_report.model.dto.ReportDTO;
 import com.jar.kiranaregister.cache.service.CacheService;
-import com.jar.kiranaregister.feature_transaction.utils.StringUtils;
+import com.jar.kiranaregister.utils.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.TimeUnit;

@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.AOP;
+package com.jar.kiranaregister.ratelimiting.AOP;
 
 import java.lang.annotation.*;
 

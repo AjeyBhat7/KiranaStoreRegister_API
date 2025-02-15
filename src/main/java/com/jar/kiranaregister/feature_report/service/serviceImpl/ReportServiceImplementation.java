@@ -10,7 +10,7 @@ import com.jar.kiranaregister.feature_fxrates.model.responseObj.FxRatesResponse;
 import com.jar.kiranaregister.feature_report.service.ReportService;
 import com.jar.kiranaregister.feature_transaction.service.TransactionService;
 import com.jar.kiranaregister.feature_fxrates.service.FxRatesService;
-import com.jar.kiranaregister.feature_transaction.utils.ValidationUtils;
+import com.jar.kiranaregister.utils.ValidationUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
