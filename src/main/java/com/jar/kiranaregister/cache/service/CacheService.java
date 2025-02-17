@@ -5,12 +5,8 @@
 
 package com.jar.kiranaregister.cache.service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
-
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +45,4 @@ public class CacheService {
     public void decrementKey(String key) {
         this.redisKVTemplate.opsForValue().decrement(key);
     }
-
 }

@@ -5,16 +5,16 @@ import com.jar.kiranaregister.exception.TokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
-    private final Key SECRET_KEY = Keys.hmacShaKeyFor("bikwanJNSDbkbkBKHu8yuerk3jb8R4KHi9JBKiy8HKhJHVb".getBytes());
+    private final Key SECRET_KEY =
+            Keys.hmacShaKeyFor("bikwanJNSDbkbkBKHu8yuerk3jb8R4KHi9JBKiy8HKhJHVb".getBytes());
 
     public String generateToken(String userId, String phoneNumber, List<String> roles) {
         return Jwts.builder()
@@ -22,7 +22,8 @@ public class JwtUtil {
                 .setId(phoneNumber)
                 .setSubject(userId) // Use MongoDB _id as the subject
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1-hour expiry
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1-hour expiry
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -69,11 +70,12 @@ public class JwtUtil {
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         try {
-            final Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+            final Claims claims =
+                    Jwts.parserBuilder()
+                            .setSigningKey(SECRET_KEY)
+                            .build()
+                            .parseClaimsJws(token)
+                            .getBody();
             return claimsResolver.apply(claims);
         } catch (Exception e) {
             throw new TokenException("Error while extracting claim from token.");

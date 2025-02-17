@@ -2,10 +2,9 @@ package com.jar.kiranaregister.feature_users.dao;
 
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;
 import com.jar.kiranaregister.feature_users.repository.UserRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class UserDAO {
@@ -17,10 +16,9 @@ public class UserDAO {
         this.userRepository = userRepository;
     }
 
+    public UserEntity save(UserEntity userEntity) {
 
-    public UserEntity save(UserEntity userEntity)  {
-
-        if(userRepository.existsByPhoneNumber(userEntity.getPhoneNumber())){
+        if (userRepository.existsByPhoneNumber(userEntity.getPhoneNumber())) {
             throw new IllegalArgumentException("This phone number alredy used");
         }
         return userRepository.save(userEntity);

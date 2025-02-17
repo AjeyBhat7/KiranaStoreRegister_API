@@ -2,11 +2,10 @@ package com.jar.kiranaregister.feature_product.dao;
 
 import com.jar.kiranaregister.feature_product.model.entity.Product;
 import com.jar.kiranaregister.feature_product.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ProductDao {
@@ -23,8 +22,7 @@ public class ProductDao {
         return productRepository.findById(productId);
     }
 
-
-    public String saveProduct(Product product){
+    public String saveProduct(Product product) {
 
         productRepository.save(product);
 

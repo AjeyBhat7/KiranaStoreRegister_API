@@ -1,10 +1,8 @@
 package com.jar.kiranaregister.feature_product.controller;
 
 import com.jar.kiranaregister.feature_product.model.entity.Product;
-
-import java.util.List;
-
 import com.jar.kiranaregister.feature_product.service.ProductService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,8 +22,8 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/addProduct")
     public ResponseEntity<?> addProduct(@RequestBody Product product) {
-            productService.create(product);
-            return ResponseEntity.ok("added");
+        productService.create(product);
+        return ResponseEntity.ok("added");
     }
 
     @GetMapping("getAllProducts")

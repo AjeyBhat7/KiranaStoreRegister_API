@@ -19,7 +19,6 @@ public class ReportKafkaConsumer {
 
     public ReportKafkaConsumer(ReportService reportService) {
         this.reportService = reportService;
-
     }
 
     /**
@@ -27,7 +26,6 @@ public class ReportKafkaConsumer {
      *
      * @param message
      */
-
     @KafkaListener(topics = "${kafka.topic.report}", groupId = "report-group")
     public void processReport(String message) {
         try {
@@ -35,8 +33,6 @@ public class ReportKafkaConsumer {
 
             ReportRequest request = StringUtils.fromJson(message, ReportRequest.class);
             reportService.generateReport(request.getInterval(), request.getCurrency());
-
-
 
         } catch (Exception e) {
             log.error(message + ": " + e.getMessage());

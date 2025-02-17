@@ -4,9 +4,9 @@ import com.jar.kiranaregister.enums.CurrencyName;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import jakarta.persistence.*;
-import lombok.Data;
 import java.util.Date;
 import java.util.UUID;
+import lombok.Data;
 
 @Entity
 @Data

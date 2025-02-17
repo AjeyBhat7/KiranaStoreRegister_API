@@ -4,10 +4,9 @@ import com.jar.kiranaregister.enums.CurrencyName;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import com.jar.kiranaregister.feature_transaction.model.entity.Bill;
-import lombok.Data;
-
 import java.util.Date;
 import java.util.UUID;
+import lombok.Data;
 
 @Data
 public class TransactionDetails {

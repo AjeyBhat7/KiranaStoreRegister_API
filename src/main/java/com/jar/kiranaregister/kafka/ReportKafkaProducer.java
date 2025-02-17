@@ -30,7 +30,10 @@ public class ReportKafkaProducer {
     public void sendReportRequest(ReportRequest reportRequest) {
         try {
             String message = StringUtils.toJson(reportRequest);
-            logger.info("Sending report request to Kafka - Topic: {}, Message: {}", reportTopic, message);
+            logger.info(
+                    "Sending report request to Kafka - Topic: {}, Message: {}",
+                    reportTopic,
+                    message);
 
             kafkaTemplate.send(reportTopic, message);
 

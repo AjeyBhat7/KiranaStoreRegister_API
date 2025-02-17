@@ -1,6 +1,5 @@
 package com.jar.kiranaregister.feature_transaction.model.DTOModel;
 
-
 import lombok.Data;
 
 @Data

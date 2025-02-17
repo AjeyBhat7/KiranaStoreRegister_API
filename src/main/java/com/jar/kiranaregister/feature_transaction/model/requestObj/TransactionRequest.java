@@ -1,12 +1,11 @@
 package com.jar.kiranaregister.feature_transaction.model.requestObj;
 
 import com.jar.kiranaregister.feature_product.model.dto.PurchasedProducts;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter

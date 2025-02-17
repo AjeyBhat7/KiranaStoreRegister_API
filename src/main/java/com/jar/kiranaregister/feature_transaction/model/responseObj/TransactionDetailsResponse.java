@@ -1,9 +1,7 @@
 package com.jar.kiranaregister.feature_transaction.model.responseObj;
 
-import lombok.Data;
-
 import java.util.List;
-
+import lombok.Data;
 
 @Data
 public class TransactionDetailsResponse {

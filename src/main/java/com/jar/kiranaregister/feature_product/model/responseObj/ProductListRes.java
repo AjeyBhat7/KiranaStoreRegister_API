@@ -1,10 +1,8 @@
 package com.jar.kiranaregister.feature_product.model.responseObj;
 
-
 import com.jar.kiranaregister.feature_product.model.entity.Product;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class ProductListRes {

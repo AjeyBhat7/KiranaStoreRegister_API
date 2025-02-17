@@ -6,6 +6,4 @@ import lombok.*;
 public class DebitTransactionRequest {
     private double amount;
     private String currency;
-
-
 }

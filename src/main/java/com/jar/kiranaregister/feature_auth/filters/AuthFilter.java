@@ -10,16 +10,15 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class AuthFilter extends OncePerRequestFilter {
@@ -40,7 +39,9 @@ public class AuthFilter extends OncePerRequestFilter {
 
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (request.getServletPath().equals("/login") || request.getServletPath().equals("/register") || request.getServletPath().startsWith("/actuator")) {
+        if (request.getServletPath().equals("/login")
+                || request.getServletPath().equals("/register")
+                || request.getServletPath().startsWith("/actuator")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -66,9 +67,10 @@ public class AuthFilter extends OncePerRequestFilter {
 
                 if (jwtUtil.validateToken(token, userId)) {
 
-                    List<SimpleGrantedAuthority> authorities = roles.stream()
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(Collectors.toList());
+                    List<SimpleGrantedAuthority> authorities =
+                            roles.stream()
+                                    .map(SimpleGrantedAuthority::new)
+                                    .collect(Collectors.toList());
 
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
@@ -84,7 +86,8 @@ public class AuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void handleAuthenticationError(HttpServletResponse response, String message) throws IOException {
+    private void handleAuthenticationError(HttpServletResponse response, String message)
+            throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.getWriter().write("{\"error\": \"" + message + "\"}");

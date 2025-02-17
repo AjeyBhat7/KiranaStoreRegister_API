@@ -1,11 +1,10 @@
 package com.jar.kiranaregister.feature_report.dao;
 
-import com.jar.kiranaregister.feature_report.model.dto.ReportDTO;
 import com.jar.kiranaregister.cache.service.CacheService;
+import com.jar.kiranaregister.feature_report.model.dto.ReportDTO;
 import com.jar.kiranaregister.utils.StringUtils;
-import org.springframework.stereotype.Repository;
-
 import java.util.concurrent.TimeUnit;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class ReportDao {
@@ -16,7 +15,6 @@ public class ReportDao {
 
     public ReportDao(CacheService cacheService) {
         this.cacheService = cacheService;
-
     }
 
     public void saveReport(String interval, String currency, ReportDTO report) {
@@ -24,7 +22,6 @@ public class ReportDao {
 
         String jsonReport = StringUtils.toJson(report);
         cacheService.setValueToRedis(key, jsonReport, REPORT_CACHE_TTL);
-
     }
 
     public ReportDTO getReport(String interval, String currency) {
@@ -35,8 +32,7 @@ public class ReportDao {
 
         String jsonReport = cacheService.getValueFromRedis(key);
 
-            return StringUtils.fromJson(jsonReport, ReportDTO.class);
-
+        return StringUtils.fromJson(jsonReport, ReportDTO.class);
     }
 
     private String generateKey(String interval, String currency) {

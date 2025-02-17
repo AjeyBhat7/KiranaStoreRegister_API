@@ -21,9 +21,9 @@ public class TransactionDAO {
 
     /**
      * saves data in db
+     *
      * @param transaction
      */
-
     public void save(Transaction transaction) {
         transactionRepository.save(transaction);
     }

@@ -1,17 +1,16 @@
 package com.jar.kiranaregister.feature_users.service.serviceImpl;
 
-import com.jar.kiranaregister.feature_users.dao.UserDAO;
 import com.jar.kiranaregister.enums.Role;
+import com.jar.kiranaregister.feature_users.dao.UserDAO;
 import com.jar.kiranaregister.feature_users.model.dto.UserDto;
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;
 import com.jar.kiranaregister.feature_users.repository.UserRepository;
 import com.jar.kiranaregister.feature_users.service.UserService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,21 +25,18 @@ public class UserServiceImplementation implements UserService {
         this.userRepository = userRepository;
     }
 
-
     /**
      * Saves a new user to the database.
      *
      * @param userDto DTO containing user details.
      * @return The saved user as a DTO.
      */
-
     @Override
-    public UserDto save(UserDto userDto)  {
+    public UserDto save(UserDto userDto) {
 
         log.info("Attempting to save user: {}", userDto.getUsername());
 
         UserEntity userEntity = toUserEntity(userDto);
-
 
         UserEntity savedUser = userDao.save(userEntity);
 
@@ -61,16 +57,17 @@ public class UserServiceImplementation implements UserService {
         userEntity.setUserName(userDto.getUsername());
         userEntity.setPassword(userDto.getPassword());
 
-
-        List<Role> roles = userDto.getRoles().stream()
-                .map(role -> {
-                    try {
-                        return Role.valueOf(role);
-                    } catch (IllegalArgumentException e) {
-                        throw new IllegalArgumentException("Invalid role: " + role);
-                    }
-                })
-                .toList();
+        List<Role> roles =
+                userDto.getRoles().stream()
+                        .map(
+                                role -> {
+                                    try {
+                                        return Role.valueOf(role);
+                                    } catch (IllegalArgumentException e) {
+                                        throw new IllegalArgumentException("Invalid role: " + role);
+                                    }
+                                })
+                        .toList();
 
         userEntity.setRoles(roles);
 
@@ -89,7 +86,8 @@ public class UserServiceImplementation implements UserService {
         userDto.setPhoneNumber(userEntity.getPhoneNumber());
         userDto.setUsername(userEntity.getUserName());
         userDto.setPassword(userEntity.getPassword());
-        userDto.setRoles(userEntity.getRoles().stream().map(Enum::name).collect(Collectors.toList()));
+        userDto.setRoles(
+                userEntity.getRoles().stream().map(Enum::name).collect(Collectors.toList()));
         return userDto;
     }
 }

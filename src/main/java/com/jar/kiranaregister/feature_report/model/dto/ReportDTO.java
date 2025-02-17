@@ -1,8 +1,7 @@
 package com.jar.kiranaregister.feature_report.model.dto;
 
-import java.util.List;
-
 import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDTO;
+import java.util.List;
 import lombok.Data;
 
 @Data

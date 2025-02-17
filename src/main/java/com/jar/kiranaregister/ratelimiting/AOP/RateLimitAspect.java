@@ -21,7 +21,8 @@ public class RateLimitAspect {
     }
 
     @Around("@annotation(rateLimited)")
-    public Object handleRateLimiting(ProceedingJoinPoint joinPoint, RateLimited rateLimited) throws Throwable {
+    public Object handleRateLimiting(ProceedingJoinPoint joinPoint, RateLimited rateLimited)
+            throws Throwable {
 
         String bucketName = rateLimited.bucketName();
         Bucket bucket;
@@ -29,7 +30,8 @@ public class RateLimitAspect {
         try {
             bucket = applicationContext.getBean(bucketName, Bucket.class); // Get the Bucket bean
         } catch (Exception e) {
-            throw new IllegalStateException("Rate limiting bucket '" + bucketName + "' not found.", e);
+            throw new IllegalStateException(
+                    "Rate limiting bucket '" + bucketName + "' not found.", e);
         }
 
         if (bucket.tryConsume(1)) {

@@ -24,5 +24,4 @@ public class ApiResponse {
     private String errorCode;
 
     private String displayMsg;
-
 }

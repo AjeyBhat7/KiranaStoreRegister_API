@@ -1,17 +1,13 @@
 package com.jar.kiranaregister.exception;
 
+import java.util.NoSuchElementException;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionController {
@@ -40,7 +36,8 @@ public class GlobalExceptionController {
     }
 
     @ExceptionHandler(HttpClientErrorException.Forbidden.class)
-    public ResponseEntity<ApiResponse> handleHttpClientErrorException(HttpClientErrorException.Forbidden e) {
+    public ResponseEntity<ApiResponse> handleHttpClientErrorException(
+            HttpClientErrorException.Forbidden e) {
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);

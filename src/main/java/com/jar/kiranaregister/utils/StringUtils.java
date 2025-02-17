@@ -7,7 +7,7 @@ public class StringUtils {
     public static <T> T fromJson(String json, Class<T> cls) {
         try {
             ObjectMapper ob = new ObjectMapper();
-            return (T)ob.readValue(json, cls);
+            return (T) ob.readValue(json, cls);
         } catch (Exception e) {
 
             return null;

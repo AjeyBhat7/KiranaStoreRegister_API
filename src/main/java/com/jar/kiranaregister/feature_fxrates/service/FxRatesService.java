@@ -1,15 +1,15 @@
 package com.jar.kiranaregister.feature_fxrates.service;
 
-import com.jar.kiranaregister.ratelimiting.AOP.RateLimited;
-import com.jar.kiranaregister.feature_fxrates.model.responseObj.FxRatesResponse;
 import com.jar.kiranaregister.cache.service.CacheService;
+import com.jar.kiranaregister.feature_fxrates.model.responseObj.FxRatesResponse;
+import com.jar.kiranaregister.ratelimiting.AOP.RateLimited;
 import com.jar.kiranaregister.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class FxRatesService {
@@ -25,8 +25,8 @@ public class FxRatesService {
     }
 
     /**
-     * Fetches the latest foreign exchange rates.
-     * Uses caching to reduce API calls and rate limiting for protection.
+     * Fetches the latest foreign exchange rates. Uses caching to reduce API calls and rate limiting
+     * for protection.
      *
      * @return FxRates response
      */
@@ -51,7 +51,8 @@ public class FxRatesService {
             if (fxRatesResponse != null) {
                 logger.info("Storing FX rates in cache.");
                 String fxRatesResponseStr = StringUtils.toJson(fxRatesResponse);
-                cacheService.setValueToRedis(cacheKey, fxRatesResponseStr, 300L); // Cache for 5 minutes
+                cacheService.setValueToRedis(
+                        cacheKey, fxRatesResponseStr, 300L); // Cache for 5 minutes
             }
 
             return fxRatesResponse;

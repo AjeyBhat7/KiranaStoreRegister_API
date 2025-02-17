@@ -3,15 +3,15 @@ package com.jar.kiranaregister.feature_transaction.utils;
 import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDTO;
-import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.entity.Bill;
 import com.jar.kiranaregister.feature_transaction.model.entity.Transaction;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import java.util.Date;
 import java.util.UUID;
 
 public class TransactionUtils {
 
-    public  static TransactionDTO mapToDTO(Transaction transaction) {
+    public static TransactionDTO mapToDTO(Transaction transaction) {
 
         TransactionDTO td = new TransactionDTO();
 
@@ -25,9 +25,7 @@ public class TransactionUtils {
         return td;
     }
 
-
-
-    public  Transaction mapToTransaction(TransactionDTO transactionDTO) {
+    public Transaction mapToTransaction(TransactionDTO transactionDTO) {
 
         Transaction convertedTranssction = new Transaction();
 

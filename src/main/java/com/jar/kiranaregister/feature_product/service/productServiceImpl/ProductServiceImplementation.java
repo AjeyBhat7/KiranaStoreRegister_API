@@ -5,11 +5,10 @@ import com.jar.kiranaregister.feature_product.model.dto.ProductDto;
 import com.jar.kiranaregister.feature_product.model.entity.Product;
 import com.jar.kiranaregister.feature_product.model.responseObj.ProductListRes;
 import com.jar.kiranaregister.feature_product.service.ProductService;
+import java.util.List;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductServiceImplementation implements ProductService {
@@ -28,7 +27,7 @@ public class ProductServiceImplementation implements ProductService {
 
     @Override
     public ProductDto getProductById(String productId) {
-        Product product =  productDao.getProductById(productId).orElse(null);
+        Product product = productDao.getProductById(productId).orElse(null);
         if (product == null) {
             throw new ResourceNotFoundException("Product not found");
         }
@@ -39,7 +38,7 @@ public class ProductServiceImplementation implements ProductService {
     @Override
     public List<Product> getAllProducts() {
 
-        List<Product> products =  productDao.getAllProducts();
+        List<Product> products = productDao.getAllProducts();
 
         ProductListRes productListRes = new ProductListRes();
         productListRes.setProducts(products);
@@ -47,9 +46,9 @@ public class ProductServiceImplementation implements ProductService {
         return products;
     }
 
-//    convert to dto
+    //    convert to dto
 
-    private ProductDto getProductDto(Product product){
+    private ProductDto getProductDto(Product product) {
         ProductDto productDto = new ProductDto();
         productDto.setId(product.getId());
         productDto.setName(product.getName());
