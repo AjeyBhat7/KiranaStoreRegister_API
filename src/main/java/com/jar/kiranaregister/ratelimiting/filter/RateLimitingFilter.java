@@ -1,5 +1,6 @@
 package com.jar.kiranaregister.ratelimiting.filter;
 
+import com.jar.kiranaregister.exception.RateLimitExceededException;
 import com.jar.kiranaregister.feature_auth.utils.JwtUtil;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bandwidth;
@@ -7,9 +8,10 @@ import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import com.jar.kiranaregister.ratelimiting.exception.RateLimitExceededException;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -32,28 +34,40 @@ public class RateLimitingFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String authorizationHeader = httpRequest.getHeader("Authorization");
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
-            return;
-        }
+        try{
 
-        String token = authorizationHeader.substring(7);
-        String userId = jwtUtil.extractUserId(token);
+            String authorizationHeader = ((HttpServletRequest) request).getHeader("Authorization");
 
-        if (userId != null) {
-            Bucket bucket = userBuckets.computeIfAbsent(userId, this::createNewBucket);
-
-            if (bucket.tryConsume(1)) {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 chain.doFilter(request, response);
-            } else {
-                throw new RateLimitExceededException("request limit is exceeded");
+                return;
             }
-        } else {
-            chain.doFilter(request, response);
+
+            String token = authorizationHeader.substring(7);
+            String userId = jwtUtil.extractUserId(token);
+
+            if (userId != null) {
+                Bucket bucket = userBuckets.computeIfAbsent(userId, this::createNewBucket);
+
+                if (bucket.tryConsume(1)) {
+                    chain.doFilter(request, response);
+                } else {
+                    throw new RateLimitExceededException("Rate limit exceeded");
+                }
+            } else {
+                chain.doFilter(request, response);
+            }
+        } catch (RateLimitExceededException e){
+            handleRateLimitExceeded(httpResponse);
         }
+    }
+
+    private void handleRateLimitExceeded(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"Request limit exceeded\"}");
     }
 
     private Bucket createNewBucket(String userId) {
@@ -64,6 +78,7 @@ public class RateLimitingFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {}
+
 
     @Override
     public void destroy() {}

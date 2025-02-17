@@ -91,15 +91,12 @@ public class TransactionController {
             @RequestParam UUID id, @RequestParam(required = false) String currency) {
 
             // Get user details from the security context
-            UserInfo userDetails =
-                    (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             TransactionDTO transaction = transactionService.getTransactionById(id, currency);
 
             log.info("Successfully retrieved transactionId: {}", transaction.getId());
 
             return new ResponseEntity<>(transaction, HttpStatus.OK);
-
     }
 
     /**

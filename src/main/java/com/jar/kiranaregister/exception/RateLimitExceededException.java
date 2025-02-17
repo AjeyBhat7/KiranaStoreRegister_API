@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.ratelimiting.exception;
+package com.jar.kiranaregister.exception;
 
 public class RateLimitExceededException extends RuntimeException {
 

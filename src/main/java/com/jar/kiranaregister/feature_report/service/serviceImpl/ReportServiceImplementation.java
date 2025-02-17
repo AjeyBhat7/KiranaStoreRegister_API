@@ -13,12 +13,15 @@ import com.jar.kiranaregister.feature_fxrates.service.FxRatesService;
 import com.jar.kiranaregister.utils.ValidationUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import static com.jar.kiranaregister.utils.ConversionUtils.getConvertedAmount;
 
 @Service
 @Slf4j
@@ -64,12 +67,12 @@ public class ReportServiceImplementation implements ReportService {
 
         // Convert all transactions to requested currency
         transactions.forEach(transaction -> {
-            double convertedAmount = convertCurrency(transaction.getAmount(), transaction.getCurrencyName().toString(), requiredCurrencyName.name(), exchangeRates);
+            double convertedAmount = getConvertedAmount(transaction.getAmount(), transaction.getCurrencyName().toString(), requiredCurrencyName.name(), exchangeRates);
             transaction.setAmount(convertedAmount);
             transaction.setCurrencyName(requiredCurrencyName);
         });
 
-        // Compute financial metrics using reduce()
+
         double credit = transactions.stream()
                 .filter(t -> t.getTransactionType() == TransactionType.CREDIT)
                 .map(TransactionDTO::getAmount)
@@ -114,31 +117,12 @@ public class ReportServiceImplementation implements ReportService {
         ReportDTO report = reportDao.getReport(interval, requiredCurrencyName.name());
         if (report == null) {
             log.warn("Report not found : {} and currency: {}", interval, requiredCurrencyName.name());
-            throw new NoSuchElementException("Report not found");
+            throw new ResourceNotFoundException("Report not found");
         } else {
-            log.info("Report fetched successfully from cache.");
+            log.info("Report fetched successfully.");
         }
         return report;
     }
 
-    /**
-     * Converts an amount from one currency to another based on the provided exchange rates.
-     *
-     * @param amount       The amount to convert.
-     * @param fromCurrency The original currency.
-     * @param toCurrency   The target currency.
-     * @param exchangeRates A map of exchange rates.
-     * @return The converted amount.
-     */
-    private double convertCurrency(double amount, String fromCurrency, String toCurrency, Map<String, Double> exchangeRates) {
-        if (fromCurrency.equals(toCurrency)) {
-            return amount; // No conversion needed
-        }
-        if (!exchangeRates.containsKey(fromCurrency) || !exchangeRates.containsKey(toCurrency)) {
-            log.error("Exchange rate not found for: {} or {}", fromCurrency, toCurrency);
-            throw new IllegalArgumentException("Exchange rate not found for: " + fromCurrency + " or " + toCurrency);
-        }
-        double usdAmount = amount / exchangeRates.get(fromCurrency); // Convert to USD
-        return usdAmount * exchangeRates.get(toCurrency); // Convert to target currency
-    }
+
 }

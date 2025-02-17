@@ -46,7 +46,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserEntity user = userDAO.findById(userId).orElse(null);
 
         if (user == null) {
-
             throw new UsernameNotFoundException("User not found");
         }
 

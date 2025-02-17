@@ -1,11 +1,8 @@
 package com.jar.kiranaregister.feature_auth.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
+import com.jar.kiranaregister.exception.JwtValidationException;
+import com.jar.kiranaregister.exception.TokenException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Component;
@@ -20,7 +17,6 @@ public class JwtUtil {
     private final Key SECRET_KEY = Keys.hmacShaKeyFor("bikwanJNSDbkbkBKHu8yuerk3jb8R4KHi9JBKiy8HKhJHVb".getBytes());
 
     public String generateToken(String userId, String phoneNumber, List<String> roles) {
-
         return Jwts.builder()
                 .claim("roles", roles)
                 .setId(phoneNumber)
@@ -34,9 +30,16 @@ public class JwtUtil {
     public boolean validateToken(String token, String userId) {
         try {
             return extractUserId(token).equals(userId) && !isTokenExpired(token);
-
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
-            return false;
+        } catch (ExpiredJwtException e) {
+            throw new JwtValidationException("JWT token is expired.");
+        } catch (UnsupportedJwtException e) {
+            throw new JwtValidationException("JWT token is unsupported.");
+        } catch (MalformedJwtException e) {
+            throw new JwtValidationException("JWT token is malformed.");
+        } catch (SignatureException e) {
+            throw new JwtValidationException("Invalid JWT signature.");
+        } catch (IllegalArgumentException e) {
+            throw new JwtValidationException("JWT token is invalid.");
         }
     }
 
@@ -45,7 +48,11 @@ public class JwtUtil {
     }
 
     public String extractUserId(String token) {
-        return extractClaim(token, Claims::getSubject); // Get _id from JWT
+        try {
+            return extractClaim(token, Claims::getSubject); // Get _id from JWT
+        } catch (Exception e) {
+            throw new TokenException("Failed to extract user ID from token.");
+        }
     }
 
     public String extractPhoneNumber(String token) {
@@ -61,11 +68,15 @@ public class JwtUtil {
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claimsResolver.apply(claims);
+        try {
+            final Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claimsResolver.apply(claims);
+        } catch (Exception e) {
+            throw new TokenException("Error while extracting claim from token.");
+        }
     }
 }

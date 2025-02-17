@@ -28,14 +28,14 @@ public class TransactionDAO {
         transactionRepository.save(transaction);
     }
 
-    public List<Transaction> findByUserId(String username) {
+    public List<Transaction> findByUserId(String userId) {
 
-        return transactionRepository.findByUserId(username);
+        return transactionRepository.findByUserId(userId);
     }
 
-    public Optional<Transaction> findByTransactionIdAndUserId(UUID id, String username) {
+    public Optional<Transaction> findByTransactionIdAndUserId(UUID id, String userId) {
 
-        return transactionRepository.findByTransactionIdAndUserId(id, username);
+        return transactionRepository.findByTransactionIdAndUserId(id, userId);
     }
 
     public boolean existsById(UUID id) {

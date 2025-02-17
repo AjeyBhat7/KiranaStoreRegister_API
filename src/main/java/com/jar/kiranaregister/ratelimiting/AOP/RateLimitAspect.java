@@ -1,6 +1,6 @@
 package com.jar.kiranaregister.ratelimiting.AOP;
 
-import com.jar.kiranaregister.ratelimiting.exception.RateLimitExceededException;
+import com.jar.kiranaregister.exception.RateLimitExceededException;
 import io.github.bucket4j.Bucket;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

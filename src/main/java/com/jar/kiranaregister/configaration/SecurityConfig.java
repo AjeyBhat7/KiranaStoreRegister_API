@@ -1,6 +1,6 @@
 package com.jar.kiranaregister.configaration;
 
-import com.jar.kiranaregister.feature_auth.filters.JwtFilter;
+import com.jar.kiranaregister.feature_auth.filters.AuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,7 +32,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthFilter authFilter)
             throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
@@ -43,7 +43,7 @@ public class SecurityConfig {
                                         .authenticated())
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable);
 
         return http.build();

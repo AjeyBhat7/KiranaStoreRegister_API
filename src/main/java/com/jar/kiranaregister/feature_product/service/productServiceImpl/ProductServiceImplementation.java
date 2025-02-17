@@ -5,6 +5,7 @@ import com.jar.kiranaregister.feature_product.model.dto.ProductDto;
 import com.jar.kiranaregister.feature_product.model.entity.Product;
 import com.jar.kiranaregister.feature_product.model.responseObj.ProductListRes;
 import com.jar.kiranaregister.feature_product.service.ProductService;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class ProductServiceImplementation implements ProductService {
     public ProductDto getProductById(String productId) {
         Product product =  productDao.getProductById(productId).orElse(null);
         if (product == null) {
-            throw new IllegalArgumentException("Product not found");
+            throw new ResourceNotFoundException("Product not found");
         }
 
         return getProductDto(product);
@@ -45,7 +46,6 @@ public class ProductServiceImplementation implements ProductService {
 
         return products;
     }
-
 
 //    convert to dto
 
