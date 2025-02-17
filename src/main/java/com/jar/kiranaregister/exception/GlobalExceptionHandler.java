@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.dao.DataIntegrityViolationException;
 import com.jar.kiranaregister.ratelimiting.exception.RateLimitExceededException;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collections;
 import java.util.NoSuchElementException;
@@ -27,6 +28,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
+    public ResponseEntity<String> handleHttpClientErrorException(HttpClientErrorException.Forbidden e) {
+        return new ResponseEntity<>("user is not authorized", HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

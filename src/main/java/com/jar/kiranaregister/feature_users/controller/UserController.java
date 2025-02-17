@@ -60,8 +60,10 @@ public class UserController {
 
             // Hash the user's password before saving
             user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-
+            userService.save(user);
+            
             logger.info("User {} registered successfully", user.getUsername());
+
             return new ResponseEntity<>("User regisetrd succussfully", HttpStatus.CREATED);
 
     }

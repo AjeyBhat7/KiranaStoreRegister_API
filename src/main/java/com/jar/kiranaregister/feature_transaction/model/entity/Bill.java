@@ -13,7 +13,7 @@ import java.util.List;
 public class Bill {
 
     @Id
-    private String billId;
+    private String id;
 
     private List<PurchasedProductsDetails> purchasedProducts;
 

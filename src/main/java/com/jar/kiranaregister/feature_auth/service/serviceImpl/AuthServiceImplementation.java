@@ -1,6 +1,7 @@
 package com.jar.kiranaregister.feature_auth.service.serviceImpl;
 
 import com.jar.kiranaregister.feature_auth.service.AuthService;
+import com.jar.kiranaregister.feature_users.dao.UserDAO;
 import com.jar.kiranaregister.feature_users.model.dto.UserDto;
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;
 import com.jar.kiranaregister.feature_users.model.requestObj.LoginRequest;
@@ -23,13 +24,15 @@ public class AuthServiceImplementation implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final UserDAO userDAO;
 
     @Autowired
     public AuthServiceImplementation(
-            AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository) {
+            AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository, UserDAO userDAO) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.userDAO = userDAO;
     }
 
     /**
@@ -44,7 +47,8 @@ public class AuthServiceImplementation implements AuthService {
         log.info("Attempting authentication for phone number: {}", request.getPhoneNumber());
 
         // Retrieve user from the database
-        UserEntity user = userRepository.findByPhoneNumber(request.getPhoneNumber()).orElse(null);
+        UserEntity user = userDAO.findByPhoneNumber(request.getPhoneNumber()).orElse(null);
+
         String userId = Optional.ofNullable(user).map(UserEntity::getId).orElse(null);
 
         if (userId == null) {
@@ -65,16 +69,10 @@ public class AuthServiceImplementation implements AuthService {
                     return new UsernameNotFoundException("User not found");
                 });
 
-        // Convert UserEntity to UserDto
-        UserDto userDto = new UserDto();
-        userDto.setId(userEntity.getId());
-        userDto.setRoles(userEntity.getRoles().stream().map(Enum::name).collect(Collectors.toList()));
-        userDto.setPhoneNumber(request.getPhoneNumber());
-
         // Generate JWT Token
-        String token = jwtUtil.generateToken(userDto.getId(), userDto.getPhoneNumber(), userDto.getRoles());
+        String token = jwtUtil.generateToken(userEntity.getId(), userEntity.getPhoneNumber(), userEntity.getRoles().stream().map(Enum::name).collect(Collectors.toList()));
 
-        log.info("JWT token generated for user: {}", userDto.getId());
+        log.info("JWT token generated for user: {}", userEntity.getId());
         return token;
     }
 

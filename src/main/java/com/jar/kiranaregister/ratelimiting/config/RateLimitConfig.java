@@ -21,7 +21,7 @@ public class RateLimitConfig {
     @Bean(name = "FxRatesRateLimitBucket")
     public Bucket FxRatesRateLimitBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofSeconds(1))))
+                .addLimit(Bandwidth.classic(50, Refill.greedy(5, Duration.ofSeconds(1))))
                 .build();
     }
 

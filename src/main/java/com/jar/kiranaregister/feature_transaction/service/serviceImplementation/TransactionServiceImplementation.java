@@ -71,7 +71,7 @@ public class TransactionServiceImplementation implements TransactionService {
         // Create and save transaction
         Transaction transaction = new Transaction();
         transaction.setUserId(userDetails.getUsername());
-
+        transaction.setAmount(request.getAmount());
         transaction.setCurrencyName(currencyName);
         transaction.setStatus(TransactionStatus.SUCCESSFUL);
         transaction.setTransactionType(TransactionType.CREDIT);
@@ -278,7 +278,7 @@ public class TransactionServiceImplementation implements TransactionService {
                 .collect(Collectors.toList());
 
 
-        bill.setBillId(bill.getBillId());
+        bill.setId(bill.getId());
         bill.setPurchasedProducts(convertedProducts);
 
         double convertedTotalAmount = getConvertedAmount(bill.getTotalAmount(), CurrencyName.USD, targetCurrency);

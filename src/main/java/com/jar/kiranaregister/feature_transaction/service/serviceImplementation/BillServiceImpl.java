@@ -50,7 +50,9 @@ public class BillServiceImpl implements BillService {
         bill.setTotalAmount(totalAmount);
         bill.setPurchasedProducts(purchasedProductsDetails);
 
-        return billDao.saveBill(bill);
+        Bill newBill = billDao.saveBill(bill);
+
+        return newBill.getId();
     }
 
     @Override

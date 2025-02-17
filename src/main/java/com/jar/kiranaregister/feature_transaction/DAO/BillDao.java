@@ -20,9 +20,9 @@ public class BillDao {
     }
 
 
-    public String saveBill(Bill bill) {
-        bill.setBillId(UUID.randomUUID().toString());
-        return billRepository.save(bill).getBillId();
+    public Bill saveBill(Bill bill) {
+
+        return billRepository.save(bill);
     }
 
     public Optional<Bill> getBillById(String billId) {

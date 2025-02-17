@@ -15,7 +15,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "transaction_id")
-    private UUID transactionId;  // Ensure this is named correctly
+    private UUID transactionId;
 
     private String userId;
 
