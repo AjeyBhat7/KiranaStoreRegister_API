@@ -1,5 +1,6 @@
 package com.jar.kiranaregister.exception;
 
+import com.jar.kiranaregister.ratelimiting.exception.RateLimitExceededException;
 import com.nimbusds.oauth2.sdk.util.singleuse.AlreadyUsedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.dao.DataIntegrityViolationException;
+import com.jar.kiranaregister.ratelimiting.exception.RateLimitExceededException;
 
 import java.util.Collections;
 import java.util.NoSuchElementException;
@@ -45,10 +47,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRateLimitException(RuntimeException e) {
-        if(e.getMessage() == "Rate limit exceeded. Try again later.")
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
-
         return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<String> handleTooManyRequestsException(RateLimitExceededException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

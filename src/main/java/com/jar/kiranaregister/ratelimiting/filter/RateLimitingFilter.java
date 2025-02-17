@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_auth.filters;
+package com.jar.kiranaregister.ratelimiting.filter;
 
 import com.jar.kiranaregister.feature_auth.utils.JwtUtil;
 import io.github.bucket4j.Bucket;
@@ -7,9 +7,9 @@ import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.jar.kiranaregister.ratelimiting.exception.RateLimitExceededException;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -49,8 +49,7 @@ public class RateLimitingFilter implements Filter {
             if (bucket.tryConsume(1)) {
                 chain.doFilter(request, response);
             } else {
-                ((HttpServletResponse) response).setStatus(429); // Too Many Requests
-                response.getWriter().write("Rate limit exceeded. Try again later.");
+                throw new RateLimitExceededException("request limit is exceeded");
             }
         } else {
             chain.doFilter(request, response);

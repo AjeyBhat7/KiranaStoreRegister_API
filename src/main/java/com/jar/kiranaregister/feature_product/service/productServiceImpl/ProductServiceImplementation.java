@@ -3,7 +3,7 @@ package com.jar.kiranaregister.feature_product.service.productServiceImpl;
 import com.jar.kiranaregister.feature_product.dao.ProductDao;
 import com.jar.kiranaregister.feature_product.model.dto.ProductDto;
 import com.jar.kiranaregister.feature_product.model.entity.Product;
-import com.jar.kiranaregister.feature_transaction.model.responseObj.ProductListRes;
+import com.jar.kiranaregister.feature_product.model.responseObj.ProductListRes;
 import com.jar.kiranaregister.feature_product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

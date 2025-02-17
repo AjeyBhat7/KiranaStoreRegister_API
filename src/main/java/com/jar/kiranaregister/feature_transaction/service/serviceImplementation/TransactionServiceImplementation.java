@@ -2,6 +2,7 @@ package com.jar.kiranaregister.feature_transaction.service.serviceImplementation
 
 
 import com.jar.kiranaregister.feature_fxrates.service.FxRatesService;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetailsResponse;
 import com.jar.kiranaregister.feature_transaction.DAO.TransactionDAO;
 import com.jar.kiranaregister.enums.CurrencyName;
 import com.jar.kiranaregister.enums.Interval;
@@ -127,7 +128,7 @@ public class TransactionServiceImplementation implements TransactionService {
      */
 
     @Override
-    public List<TransactionDetails> getAllTransactions(String targetCurrency) {
+    public TransactionDetailsResponse getAllTransactions(String targetCurrency) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         List<Transaction> transactions = transactionDAO.findByUserId(userDetails.getUsername());
@@ -144,7 +145,11 @@ public class TransactionServiceImplementation implements TransactionService {
         }).collect(Collectors.toList());
 
         log.info("Retrieved {} transactions for user: {}", transactionDetailsList.size(), userDetails.getUsername());
-        return transactionDetailsList;
+
+        TransactionDetailsResponse transactionDetailsResponse = new TransactionDetailsResponse();
+        transactionDetailsResponse.setTransactionDetails(transactionDetailsList);
+
+        return transactionDetailsResponse;
     }
 
     /**

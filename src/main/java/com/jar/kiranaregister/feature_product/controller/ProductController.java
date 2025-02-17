@@ -7,6 +7,7 @@ import java.util.List;
 import com.jar.kiranaregister.feature_product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -20,13 +21,11 @@ public class ProductController {
         this.productService = productService;
     }
 
-
-    @PostMapping()
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/addProduct")
     public ResponseEntity<?> addProduct(@RequestBody Product product) {
-
             productService.create(product);
             return ResponseEntity.ok("added");
-
     }
 
     @GetMapping("getAllProducts")

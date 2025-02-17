@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_transaction.model.responseObj;
+package com.jar.kiranaregister.feature_product.model.responseObj;
 
 
 import com.jar.kiranaregister.feature_product.model.entity.Product;

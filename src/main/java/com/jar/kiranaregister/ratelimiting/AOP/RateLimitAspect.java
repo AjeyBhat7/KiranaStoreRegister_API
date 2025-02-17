@@ -1,5 +1,6 @@
 package com.jar.kiranaregister.ratelimiting.AOP;
 
+import com.jar.kiranaregister.ratelimiting.exception.RateLimitExceededException;
 import io.github.bucket4j.Bucket;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -35,12 +36,6 @@ public class RateLimitAspect {
             return joinPoint.proceed();
         } else {
             throw new RateLimitExceededException("too many requests");
-        }
-    }
-
-    public static class RateLimitExceededException extends RuntimeException {
-        public RateLimitExceededException(String message) {
-            super(message);
         }
     }
 }

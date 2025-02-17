@@ -5,6 +5,7 @@ import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDTO;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransactionRequest;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.TransactionRequest;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetailsResponse;
 import com.jar.kiranaregister.feature_transaction.service.TransactionService;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +36,7 @@ public class TransactionController {
      * @param request The transaction request object.
      * @return The transaction status or an error message.
      */
+
     @PostMapping("credit")
     public ResponseEntity<?> createCreditTransaction(@RequestBody TransactionRequest request) {
         log.info("Received request to create credit transaction: {}", request);
@@ -72,8 +74,8 @@ public class TransactionController {
     public ResponseEntity<?> getAllTransactions(@RequestParam(required = false) String currency) {
         log.info("Fetching all transactions with currency filter: {}", currency);
 
-            List<TransactionDetails> transactions = transactionService.getAllTransactions(currency);
-            log.info("Successfully retrieved {} transactions", transactions.size());
+            TransactionDetailsResponse transactions = transactionService.getAllTransactions(currency);
+            log.info("Successfully retrieved all transactions");
             return new ResponseEntity<>(transactions, HttpStatus.OK);
 
     }

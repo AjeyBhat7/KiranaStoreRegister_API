@@ -6,6 +6,8 @@ import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDTO;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransactionRequest;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.TransactionRequest;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetailsResponse;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +17,7 @@ public interface TransactionService {
 
     TransactionStatus debitTransaction(DebitTransactionRequest request);
 
-    List<TransactionDetails> getAllTransactions(String currency);
+    TransactionDetailsResponse getAllTransactions(String currency);
 
     TransactionDTO getTransactionById(UUID id, String currency);
 
