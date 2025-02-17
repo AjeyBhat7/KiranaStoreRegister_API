@@ -9,12 +9,13 @@ import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionD
 import com.jar.kiranaregister.feature_transaction.service.TransactionService;
 import java.util.List;
 import java.util.UUID;
+
+import com.jar.kiranaregister.feature_users.model.entity.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -90,8 +91,8 @@ public class TransactionController {
             @RequestParam UUID id, @RequestParam(required = false) String currency) {
 
             // Get user details from the security context
-            UserDetails userDetails =
-                    (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserInfo userDetails =
+                    (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             TransactionDTO transaction = transactionService.getTransactionById(id, currency);
 

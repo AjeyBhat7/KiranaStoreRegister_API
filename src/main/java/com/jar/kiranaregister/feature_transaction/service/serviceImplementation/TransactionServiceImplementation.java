@@ -19,13 +19,13 @@ import com.jar.kiranaregister.feature_transaction.model.requestObj.TransactionRe
 import com.jar.kiranaregister.feature_transaction.service.BillService;
 import com.jar.kiranaregister.feature_transaction.service.TransactionService;
 import com.jar.kiranaregister.feature_transaction.utils.TransactionUtils;
+import com.jar.kiranaregister.feature_users.model.entity.UserInfo;
 import com.jar.kiranaregister.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import static com.jar.kiranaregister.feature_transaction.utils.TransactionUtils.mapToDTO;
@@ -65,12 +65,12 @@ public class TransactionServiceImplementation implements TransactionService {
         }
 
         // Get the authenticated user
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("Transaction initiated by user: {}", userDetails.getUsername());
+        UserInfo userInfo = (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("Transaction initiated by user: {}", userInfo.getUserId());
 
         // Create and save transaction
         Transaction transaction = new Transaction();
-        transaction.setUserId(userDetails.getUsername());
+        transaction.setUserId(userInfo.getUserId());
         transaction.setAmount(request.getAmount());
         transaction.setCurrencyName(currencyName);
         transaction.setStatus(TransactionStatus.SUCCESSFUL);
@@ -80,7 +80,7 @@ public class TransactionServiceImplementation implements TransactionService {
         transaction.setBillId(billService.generateBillId(request.getPurchasedProducts()));
 
         transactionDAO.save(transaction);
-        log.info(" transaction saved successfully for user: {}", userDetails.getUsername());
+        log.info(" transaction saved successfully for user: {}", userInfo.getUserId());
 
         return TransactionStatus.SUCCESSFUL;
     }
@@ -103,12 +103,12 @@ public class TransactionServiceImplementation implements TransactionService {
         }
 
         // Get the authenticated user
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("Transaction initiated by user: {}", userDetails.getUsername());
+        UserInfo userInfo = (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("Transaction initiated by user: {}", userInfo.getUserId());
 
         // Create and save transaction
         Transaction transaction = new Transaction();
-        transaction.setUserId(userDetails.getUsername());
+        transaction.setUserId(userInfo.getUsername());
         transaction.setAmount(request.getAmount());
         transaction.setCurrencyName(currencyName);
         transaction.setStatus(TransactionStatus.SUCCESSFUL);
@@ -116,7 +116,7 @@ public class TransactionServiceImplementation implements TransactionService {
         transaction.setTransactionTime(new Date());
 
         transactionDAO.save(transaction);
-        log.info(" transaction saved successfully for user: {}", userDetails.getUsername());
+        log.info(" transaction saved successfully for user: {}", userInfo.getUserId());
 
         return TransactionStatus.SUCCESSFUL;
     }
@@ -129,9 +129,9 @@ public class TransactionServiceImplementation implements TransactionService {
 
     @Override
     public TransactionDetailsResponse getAllTransactions(String targetCurrency) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserInfo userInfo = (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<Transaction> transactions = transactionDAO.findByUserId(userDetails.getUsername());
+        List<Transaction> transactions = transactionDAO.findByUserId(userInfo.getUserId());
 
         List<TransactionDetails> transactionDetailsList = transactions.stream().map(transaction -> {
                  Bill bill = null;
@@ -144,7 +144,7 @@ public class TransactionServiceImplementation implements TransactionService {
                  return mapToTransactionDetails(convertedTransaction, convertedBill);
         }).collect(Collectors.toList());
 
-        log.info("Retrieved {} transactions for user: {}", transactionDetailsList.size(), userDetails.getUsername());
+        log.info("Retrieved {} transactions for user: {}", transactionDetailsList.size(), userInfo.getUserId());
 
         TransactionDetailsResponse transactionDetailsResponse = new TransactionDetailsResponse();
         transactionDetailsResponse.setTransactionDetails(transactionDetailsList);
@@ -160,11 +160,11 @@ public class TransactionServiceImplementation implements TransactionService {
      */
     @Override
     public TransactionDTO getTransactionById(UUID id, String currency) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserInfo userInfo = (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        log.info("Fetching transaction with ID: {} for user: {}", id, userDetails.getUsername());
+        log.info("Fetching transaction with ID: {} for user: {}", id, userInfo.getUserId());
 
-        return transactionDAO.findByTransactionIdAndUserId(id, userDetails.getUsername()).map(transaction -> {
+        return transactionDAO.findByTransactionIdAndUserId(id, userInfo.getUsername()).map(transaction -> {
                     Transaction convertedTransaction = convertTransactionCurrency(transaction, currency);
                     return mapToDTO(convertedTransaction);
                 })
@@ -183,15 +183,15 @@ public class TransactionServiceImplementation implements TransactionService {
 
     @Override
     public TransactionDetails getTransactionDetailsByTransactionId(UUID id, String targetCurrency) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserInfo userInfo = (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return transactionDAO.findByTransactionIdAndUserId(id, userDetails.getUsername()).map(transaction -> {
+        return transactionDAO.findByTransactionIdAndUserId(id, userInfo.getUserId()).map(transaction -> {
                     Bill bill = billService.getBill(transaction.getBillId());
                     Bill convertedBill = convertBillCurrency(bill, targetCurrency);
                     Transaction convertedTransaction = convertTransactionCurrency(transaction, targetCurrency);
                     return mapToTransactionDetails(convertedTransaction, convertedBill);
                 }).orElseThrow(() -> {
-                    log.warn("Transaction not found with ID: {} for user: {}", id, userDetails.getUsername());
+                    log.warn("Transaction not found with ID: {} for user: {}", id, userInfo.getUserId());
                     return new IllegalArgumentException("Transaction not found");
                 });
     }

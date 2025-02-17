@@ -29,4 +29,8 @@ public class UserDAO {
     public Optional<UserEntity> findByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber);
     }
+
+    public Optional<UserEntity> findById(String userId) {
+        return userRepository.findById(userId);
+    }
 }

@@ -2,6 +2,7 @@ package com.jar.kiranaregister.feature_auth.filters;
 
 import com.jar.kiranaregister.feature_auth.service.CustomUserDetailsService;
 import com.jar.kiranaregister.feature_auth.utils.JwtUtil;
+import com.jar.kiranaregister.feature_users.model.entity.UserInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,7 +55,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+            UserInfo userDetails = (UserInfo) userDetailsService.loadUserByUserId(userId);
 
             if (jwtUtil.validateToken(token, userId)) {
 
