@@ -6,6 +6,7 @@ import com.jar.kiranaregister.feature_product.service.ProductService;
 import com.jar.kiranaregister.feature_transaction.DAO.BillDao;
 import com.jar.kiranaregister.feature_transaction.model.DTOModel.PurchasedProductsDetails;
 import com.jar.kiranaregister.feature_transaction.model.entity.Bill;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.BillResponse;
 import com.jar.kiranaregister.feature_transaction.service.BillService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public String generateBillId(List<PurchasedProducts> purchasedProducts) {
+    public BillResponse generateBillId(List<PurchasedProducts> purchasedProducts) {
         // fetch price from product service and save it
         List<PurchasedProductsDetails> purchasedProductsDetails =
                 purchasedProducts.stream()
@@ -53,9 +54,11 @@ public class BillServiceImpl implements BillService {
         bill.setTotalAmount(totalAmount);
         bill.setPurchasedProducts(purchasedProductsDetails);
 
-        Bill newBill = billDao.saveBill(bill);
+        BillResponse billResponse = new BillResponse();
+        billResponse.setAmount(totalAmount);
+        billResponse.setBillId(billDao.saveBill(bill).getId());
 
-        return newBill.getId();
+        return billResponse;
     }
 
     @Override
