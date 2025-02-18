@@ -34,7 +34,7 @@ public class UserServiceImplementation implements UserService {
     @Override
     public UserDto save(UserDto userDto) {
 
-        log.info("Attempting to save user: {}", userDto.getUsername());
+        log.info(" save user: {}", userDto.getUsername());
 
         UserEntity userEntity = toUserEntity(userDto);
 
@@ -59,14 +59,7 @@ public class UserServiceImplementation implements UserService {
 
         List<Role> roles =
                 userDto.getRoles().stream()
-                        .map(
-                                role -> {
-                                    try {
-                                        return Role.valueOf(role);
-                                    } catch (IllegalArgumentException e) {
-                                        throw new IllegalArgumentException("Invalid role: " + role);
-                                    }
-                                })
+                        .map(Role::valueOf)
                         .toList();
 
         userEntity.setRoles(roles);

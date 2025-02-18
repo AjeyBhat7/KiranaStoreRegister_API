@@ -9,7 +9,6 @@ public class StringUtils {
             ObjectMapper ob = new ObjectMapper();
             return (T) ob.readValue(json, cls);
         } catch (Exception e) {
-
             return null;
         }
     }

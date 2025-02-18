@@ -1,6 +1,8 @@
 package com.jar.kiranaregister.exception;
 
 import java.util.NoSuchElementException;
+
+import com.jar.kiranaregister.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -29,7 +31,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ApiResponse> handleNoSuchElementException(NoSuchElementException e) {
-        log.warn("Resource not found: {}", e.getMessage(), e);
+        log.error("Resource not found: {}", e.getMessage(), e);
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
         response.setStatus("Resource not found");
@@ -42,7 +44,7 @@ public class GlobalExceptionController {
     @ExceptionHandler(HttpClientErrorException.Forbidden.class)
     public ResponseEntity<ApiResponse> handleHttpClientErrorException(
             HttpClientErrorException.Forbidden e) {
-        log.warn("Access denied: {}", e.getMessage(), e);
+        log.error("Access denied: {}", e.getMessage(), e);
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
         response.setStatus("Access Denied");
@@ -54,7 +56,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse> handleBadCredentials(BadCredentialsException e) {
-        log.warn("Invalid credentials: {}", e.getMessage(), e);
+        log.error("Invalid credentials: {}", e.getMessage(), e);
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
         response.setStatus("error");
@@ -66,7 +68,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> handleResourceNotFound(ResourceNotFoundException e) {
-        log.warn("Resource not found: {}", e.getMessage(), e);
+        log.error("Resource not found: {}", e.getMessage(), e);
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
         response.setStatus("error");
@@ -102,7 +104,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(RateLimitExceededException.class)
     public ResponseEntity<ApiResponse> handleRateLimitException(RateLimitExceededException e) {
-        log.warn("Rate limit exceeded: {}", e.getMessage(), e);
+        log.error("Rate limit exceeded: {}", e.getMessage(), e);
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
         response.setStatus("Rate Limit Exceeded");
@@ -127,7 +129,7 @@ public class GlobalExceptionController {
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ApiResponse> handleAuthorizationDeniedException(
             AuthorizationDeniedException e) {
-        log.warn("Authorization denied: {}", e.getMessage(), e);
+        log.error("Authorization denied: {}", e.getMessage(), e);
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
         response.setStatus("error");

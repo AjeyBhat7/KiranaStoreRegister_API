@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.exception;
+package com.jar.kiranaregister.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

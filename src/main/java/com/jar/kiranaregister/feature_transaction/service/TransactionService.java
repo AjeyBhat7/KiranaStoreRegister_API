@@ -7,12 +7,14 @@ import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransact
 import com.jar.kiranaregister.feature_transaction.model.requestObj.TransactionRequest;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetailsResponse;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionStatusResponse;
+
 import java.util.List;
 import java.util.UUID;
 
 public interface TransactionService {
 
-    TransactionStatus addTransaction(TransactionRequest request);
+    TransactionStatusResponse addTransaction(TransactionRequest request);
 
     TransactionStatus debitTransaction(DebitTransactionRequest request);
 

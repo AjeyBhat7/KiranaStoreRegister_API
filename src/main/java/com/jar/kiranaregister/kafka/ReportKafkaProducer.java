@@ -2,16 +2,18 @@ package com.jar.kiranaregister.kafka;
 
 import com.jar.kiranaregister.feature_report.model.requestObj.ReportRequest;
 import com.jar.kiranaregister.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import static com.jar.kiranaregister.utils.ValidationUtils.validateCurrency;
+
 @Service
+@Slf4j
 public class ReportKafkaProducer {
 
-    private static final Logger logger = LoggerFactory.getLogger(ReportKafkaProducer.class);
+
 
     @Value("${kafka.topic.report}")
     private String reportTopic;
@@ -28,18 +30,16 @@ public class ReportKafkaProducer {
      * @param reportRequest the request containing report generation details
      */
     public void sendReportRequest(ReportRequest reportRequest) {
-        try {
+            validateCurrency(reportRequest.getCurrency());
             String message = StringUtils.toJson(reportRequest);
-            logger.info(
+            log.info(
                     "Sending report request to Kafka - Topic: {}, Message: {}",
                     reportTopic,
                     message);
 
             kafkaTemplate.send(reportTopic, message);
 
-            logger.info("Report request successfully sent to Kafka.");
-        } catch (Exception e) {
-            logger.error("Error sending Kafka message: {}", e.getMessage(), e);
-        }
+            log.info("Report request successfully sent to Kafka.");
+
     }
 }

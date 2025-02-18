@@ -20,6 +20,7 @@ import com.jar.kiranaregister.feature_transaction.model.requestObj.TransactionRe
 import com.jar.kiranaregister.feature_transaction.model.responseObj.BillResponse;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetailsResponse;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionStatusResponse;
 import com.jar.kiranaregister.feature_transaction.service.BillService;
 import com.jar.kiranaregister.feature_transaction.service.TransactionService;
 import com.jar.kiranaregister.feature_transaction.utils.TransactionUtils;
@@ -55,7 +56,7 @@ public class TransactionServiceImplementation implements TransactionService {
      * @return
      */
     @Override
-    public TransactionStatus addTransaction(TransactionRequest request) {
+    public TransactionStatusResponse addTransaction(TransactionRequest request) {
         log.info(
                 "Adding transaction for amount: {} and currency: {}",
                 request.getAmount(),
@@ -90,9 +91,10 @@ public class TransactionServiceImplementation implements TransactionService {
         transactionDAO.save(transaction);
         log.info("Transaction saved successfully for user: {}", userInfo.getUserId());
 
-        //        evct reports from cache
+        TransactionStatusResponse transactionStatusResponse = new TransactionStatusResponse();
+        transactionStatusResponse.setTransactionStatus(TransactionStatus.SUCCESSFUL);
 
-        return TransactionStatus.SUCCESSFUL;
+        return transactionStatusResponse;
     }
 
     /**
@@ -255,7 +257,7 @@ public class TransactionServiceImplementation implements TransactionService {
                                     "Transaction not found with ID: {} for user: {}",
                                     id,
                                     userInfo.getUserId());
-                            return new IllegalArgumentException("Transaction not found");
+                            return new ResourceNotFoundException("Transaction not found");
                         });
     }
 

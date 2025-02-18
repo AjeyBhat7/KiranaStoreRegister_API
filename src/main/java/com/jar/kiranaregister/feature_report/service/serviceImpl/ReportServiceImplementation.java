@@ -18,6 +18,8 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -125,17 +127,18 @@ public class ReportServiceImplementation implements ReportService {
 
         CurrencyName requiredCurrencyName = ValidationUtils.validateCurrency(currency);
 
-        // Check cache first (stored in the requested currency)
+        // Check cache
         ReportDTO report = reportDao.getReport(interval, requiredCurrencyName.name());
         if (report == null) {
             log.warn(
                     "Report not found : {} and currency: {}",
                     interval,
                     requiredCurrencyName.name());
-            throw new ResourceNotFoundException("Report not found");
-        } else {
-            log.info("Report fetched successfully.");
+            throw new ResourceNotFoundException("Report not found, Try again later");
+
         }
+
+        log.info("Report fetched successfully.");
         return report;
     }
 }

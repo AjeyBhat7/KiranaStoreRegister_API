@@ -4,19 +4,18 @@ import com.jar.kiranaregister.feature_report.model.dto.ReportDTO;
 import com.jar.kiranaregister.feature_report.model.requestObj.ReportRequest;
 import com.jar.kiranaregister.feature_report.service.ReportService;
 import com.jar.kiranaregister.kafka.ReportKafkaProducer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jar.kiranaregister.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Slf4j
 @RequestMapping("report")
 public class ReportController {
-
-    private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
-
+    
     private final ReportService reportService;
     private final ReportKafkaProducer kafkaProducer;
 
@@ -34,20 +33,24 @@ public class ReportController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("generate")
-    public ResponseEntity<String> asyncGenerateReport(
+    public ResponseEntity<ApiResponse> asyncGenerateReport(
             @RequestParam String interval, @RequestParam String currency) {
-        logger.info(
-                "Received request to generate report - Interval: {}, Currency: {}",
+        log.info(
+                "generating report for - Interval: {}, Currency: {}",
                 interval,
                 currency);
 
         ReportRequest request = new ReportRequest(interval, currency);
         kafkaProducer.sendReportRequest(request);
 
-        logger.info("Report generation request sent to Kafka.");
+        log.info("Report generation request sent to Kafka.");
 
-        return new ResponseEntity<>(
-                "Report generation started. Fetch the report later.", HttpStatus.ACCEPTED);
+        ApiResponse response = new ApiResponse();
+        response.setSuccess(true);
+        response.setStatus(HttpStatus.ACCEPTED.name());
+        response.setDisplayMsg("Report generation request sent to Kafka.");
+
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -60,20 +63,19 @@ public class ReportController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("fetch")
-    public ResponseEntity<?> fetchReport(
+    public ResponseEntity<ApiResponse> fetchReport(
             @RequestParam String interval, @RequestParam String currency) {
-        logger.info("Fetching report - Interval: {}, Currency: {}", interval, currency);
+        log.info("Fetching report - Interval: {}, Currency: {}", interval, currency);
 
         ReportDTO report = reportService.fetchReport(interval, currency);
 
-        if (report == null) {
-            logger.warn(
-                    "Report not available yet for Interval: {}, Currency: {}", interval, currency);
-            return new ResponseEntity<>(
-                    "Report not available yet. Try again later.", HttpStatus.NOT_FOUND);
-        }
+        log.info("Report successfully fetched.");
 
-        logger.info("Report successfully fetched.");
-        return new ResponseEntity<>(report, HttpStatus.OK);
+        ApiResponse response = new ApiResponse();
+        response.setSuccess(true);
+        response.setStatus(HttpStatus.OK.name());
+        response.setData(report);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
