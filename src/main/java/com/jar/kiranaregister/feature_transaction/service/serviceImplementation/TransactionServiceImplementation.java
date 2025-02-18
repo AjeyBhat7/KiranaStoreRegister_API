@@ -17,6 +17,7 @@ import com.jar.kiranaregister.feature_transaction.model.entity.Bill;
 import com.jar.kiranaregister.feature_transaction.model.entity.Transaction;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransactionRequest;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.TransactionRequest;
+import com.jar.kiranaregister.feature_transaction.model.responseObj.BillResponse;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetailsResponse;
 import com.jar.kiranaregister.feature_transaction.service.BillService;
@@ -76,11 +77,13 @@ public class TransactionServiceImplementation implements TransactionService {
         Transaction transaction = new Transaction();
 
         transaction.setUserId(userInfo.getUserId());
-        transaction.setAmount(request.getAmount());
         transaction.setCurrencyName(currencyName);
         transaction.setTransactionType(TransactionType.CREDIT);
         transaction.setTransactionTime(new Date());
-        transaction.setBillId(billService.generateBillId(request.getPurchasedProducts()));
+
+        BillResponse newBill = billService.generateBillId(request.getPurchasedProducts());
+        transaction.setBillId(newBill.getBillId());
+        transaction.setAmount(newBill.getAmount());
 
         transaction.setStatus(TransactionStatus.SUCCESSFUL);
 
