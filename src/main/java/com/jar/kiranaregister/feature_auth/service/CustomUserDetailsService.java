@@ -3,8 +3,6 @@ package com.jar.kiranaregister.feature_auth.service;
 import com.jar.kiranaregister.feature_users.dao.UserDAO;
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;
 import com.jar.kiranaregister.feature_users.model.entity.UserInfo;
-import com.jar.kiranaregister.feature_users.repository.UserRepository;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,25 +13,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
     private final UserDAO userDAO;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository, UserDAO userDAO) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
-        Optional<UserEntity> userEntity = userRepository.findById(userId);
-
-        if (userEntity.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        UserEntity user = userEntity.get();
+        UserEntity user =
+                userDAO.findById(userId).orElseThrow(() -> new UsernameNotFoundException(userId));
 
         return User.withUsername(user.getId())
                 .password(user.getPassword())
