@@ -16,9 +16,10 @@ import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
-public class RateLimitingFilter implements Filter {
+public class RateLimitingFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final ConcurrentMap<String, Bucket> userBuckets = new ConcurrentHashMap<>();
@@ -29,17 +30,16 @@ public class RateLimitingFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         try {
 
-            String authorizationHeader = ((HttpServletRequest) request).getHeader("Authorization");
+            String authorizationHeader = request.getHeader("Authorization");
 
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-                chain.doFilter(request, response);
+                filterChain.doFilter(request, response);
                 return;
             }
 
@@ -50,15 +50,15 @@ public class RateLimitingFilter implements Filter {
                 Bucket bucket = userBuckets.computeIfAbsent(userId, this::createNewBucket);
 
                 if (bucket.tryConsume(1)) {
-                    chain.doFilter(request, response);
+                    filterChain.doFilter(request, response);
                 } else {
                     throw new RateLimitExceededException("Rate limit exceeded");
                 }
             } else {
-                chain.doFilter(request, response);
+                filterChain.doFilter(request, response);
             }
         } catch (RateLimitExceededException e) {
-            handleRateLimitExceeded(httpResponse);
+            handleRateLimitExceeded(response);
         }
     }
 
@@ -77,10 +77,4 @@ public class RateLimitingFilter implements Filter {
                                         10, Duration.ofMinutes(1)))) // 10 requests per minute
                 .build();
     }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {}
-
-    @Override
-    public void destroy() {}
 }
