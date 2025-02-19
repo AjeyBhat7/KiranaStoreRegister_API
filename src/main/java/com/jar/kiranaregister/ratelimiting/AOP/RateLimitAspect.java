@@ -20,7 +20,15 @@ public class RateLimitAspect {
         this.applicationContext = applicationContext;
     }
 
-
+    /**
+     * fecth the beans of buckets and checks tokens are available or not if tokens are not available
+     * throws RateLimitExceededException
+     *
+     * @param joinPoint
+     * @param rateLimited
+     * @return
+     * @throws Throwable
+     */
     @Around("@annotation(rateLimited)")
     public Object handleRateLimiting(ProceedingJoinPoint joinPoint, RateLimited rateLimited)
             throws Throwable {

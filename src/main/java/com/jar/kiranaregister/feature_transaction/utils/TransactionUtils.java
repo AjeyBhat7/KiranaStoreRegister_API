@@ -1,19 +1,21 @@
 package com.jar.kiranaregister.feature_transaction.utils;
 
-import com.jar.kiranaregister.enums.TransactionStatus;
-import com.jar.kiranaregister.enums.TransactionType;
-import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDTO;
+import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDto;
 import com.jar.kiranaregister.feature_transaction.model.entity.Bill;
 import com.jar.kiranaregister.feature_transaction.model.entity.Transaction;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
-import java.util.Date;
-import java.util.UUID;
 
 public class TransactionUtils {
 
-    public static TransactionDTO mapToDTO(Transaction transaction) {
+    /**
+     * maps transactionDto to transaction
+     *
+     * @param transaction
+     * @return
+     */
+    public static TransactionDto mapToDTO(Transaction transaction) {
 
-        TransactionDTO td = new TransactionDTO();
+        TransactionDto td = new TransactionDto();
 
         td.setTransactionTime(transaction.getTransactionTime());
         td.setAmount(transaction.getAmount());
@@ -25,18 +27,13 @@ public class TransactionUtils {
         return td;
     }
 
-    public Transaction mapToTransaction(TransactionDTO transactionDTO) {
-
-        Transaction convertedTranssction = new Transaction();
-
-        convertedTranssction.setAmount(transactionDTO.getAmount());
-        convertedTranssction.setTransactionId(transactionDTO.getId());
-        convertedTranssction.setTransactionType(transactionDTO.getTransactionType());
-        convertedTranssction.setStatus(transactionDTO.getStatus());
-        convertedTranssction.setTransactionTime(transactionDTO.getTransactionTime());
-        return convertedTranssction;
-    }
-
+    /**
+     * maps transaction and bills to transactionDetails object
+     *
+     * @param transaction
+     * @param bill
+     * @return
+     */
     public static TransactionDetails mapToTransactionDetails(Transaction transaction, Bill bill) {
         TransactionDetails td = new TransactionDetails();
         td.setTransactionTime(transaction.getTransactionTime());
@@ -49,21 +46,5 @@ public class TransactionUtils {
         td.setBill(bill);
 
         return td;
-    }
-
-    public static Transaction createNewTransaction(
-            UUID transactionId,
-            TransactionStatus status,
-            Double amount,
-            String currency,
-            TransactionType transactionType) {
-        Transaction transaction = new Transaction();
-
-        transaction.setTransactionId(transactionId);
-        transaction.setStatus(status);
-        transaction.setAmount(amount);
-        transaction.setTransactionTime(new Date());
-
-        return transaction;
     }
 }

@@ -1,5 +1,7 @@
 package com.jar.kiranaregister.kafka;
 
+import static com.jar.kiranaregister.utils.ValidationUtils.validateCurrency;
+
 import com.jar.kiranaregister.feature_report.model.requestObj.ReportRequest;
 import com.jar.kiranaregister.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -7,13 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import static com.jar.kiranaregister.utils.ValidationUtils.validateCurrency;
+import java.util.Optional;
 
 @Service
 @Slf4j
 public class ReportKafkaProducer {
-
-
 
     @Value("${kafka.topic.report}")
     private String reportTopic;
@@ -30,16 +30,19 @@ public class ReportKafkaProducer {
      * @param reportRequest the request containing report generation details
      */
     public void sendReportRequest(ReportRequest reportRequest) {
-            validateCurrency(reportRequest.getCurrency());
-            String message = StringUtils.toJson(reportRequest);
-            log.info(
-                    "Sending report request to Kafka - Topic: {}, Message: {}",
-                    reportTopic,
-                    message);
+        validateCurrency(reportRequest.getCurrency());
 
-            kafkaTemplate.send(reportTopic, message);
+        String interval = reportRequest.getInterval();
 
-            log.info("Report request successfully sent to Kafka.");
+        if(interval == null) {
+            throw new IllegalArgumentException("Interval cannot be null");
+        }
 
+        String message = StringUtils.toJson(reportRequest);
+        log.info("Sending report request to Kafka - Topic: {}, Message: {}", reportTopic, message);
+
+        kafkaTemplate.send(reportTopic, message);
+
+        log.info("Report request successfully sent to Kafka.");
     }
 }

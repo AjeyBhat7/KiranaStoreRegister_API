@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionRequest {
+public class CreditTransactionRequest {
 
     private double amount;
     private String currency;

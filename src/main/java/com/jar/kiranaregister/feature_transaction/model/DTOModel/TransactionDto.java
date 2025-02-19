@@ -8,7 +8,7 @@ import java.util.UUID;
 import lombok.Data;
 
 @Data
-public class TransactionDTO {
+public class TransactionDto {
 
     private UUID id;
     private TransactionStatus status;

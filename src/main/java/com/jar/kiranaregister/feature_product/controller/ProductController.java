@@ -2,8 +2,6 @@ package com.jar.kiranaregister.feature_product.controller;
 
 import com.jar.kiranaregister.feature_product.model.entity.Product;
 import com.jar.kiranaregister.feature_product.service.ProductService;
-import java.util.List;
-
 import com.jar.kiranaregister.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +20,13 @@ public class ProductController {
         this.productService = productService;
     }
 
+
+    /**
+     *  adds product to db
+     *  only admin can access this api
+     * @param product
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/addProduct")
     public ResponseEntity<ApiResponse> addProduct(@RequestBody Product product) {
@@ -32,8 +37,13 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * fetches all the products
+     * @return
+     */
     @GetMapping("getAllProducts")
     public ResponseEntity<ApiResponse> getAllProducts() {
+
         ApiResponse response = new ApiResponse();
         response.setSuccess(true);
         response.setData(productService.getAllProducts());

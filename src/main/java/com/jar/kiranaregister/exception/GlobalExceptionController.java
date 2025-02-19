@@ -1,8 +1,7 @@
 package com.jar.kiranaregister.exception;
 
-import java.util.NoSuchElementException;
-
 import com.jar.kiranaregister.response.ApiResponse;
+import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -20,12 +19,14 @@ public class GlobalExceptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         log.error("Invalid argument: {}", e.getMessage(), e);
+
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
         response.setStatus("Invalid argument");
         response.setErrorMessage(e.getMessage());
         response.setErrorCode(String.valueOf(HttpStatus.BAD_REQUEST.value()));
         response.setDisplayMsg("An error occurred. Please try again.");
+
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

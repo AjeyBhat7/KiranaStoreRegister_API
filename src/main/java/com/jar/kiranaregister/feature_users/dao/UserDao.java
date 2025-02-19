@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDAO {
+public class UserDao {
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserDAO(UserRepository userRepository) {
+    public UserDao(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -24,10 +24,20 @@ public class UserDAO {
         return userRepository.save(userEntity);
     }
 
+    /**
+     * fetch the user by phone number
+     * @param phoneNumber
+     * @return
+     */
     public Optional<UserEntity> findByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber);
     }
 
+    /**
+     * fetch the user by id
+     * @param userId
+     * @return
+     */
     public Optional<UserEntity> findById(String userId) {
         return userRepository.findById(userId);
     }

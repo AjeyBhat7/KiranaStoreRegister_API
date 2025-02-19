@@ -1,6 +1,6 @@
 package com.jar.kiranaregister.feature_transaction.model.entity;
 
-import com.jar.kiranaregister.feature_transaction.model.DTOModel.PurchasedProductsDetails;
+import com.jar.kiranaregister.feature_product.model.dto.PurchasedProducts;
 import jakarta.persistence.Id;
 import java.util.List;
 import lombok.Data;
@@ -12,7 +12,7 @@ public class Bill {
 
     @Id private String id;
 
-    private List<PurchasedProductsDetails> purchasedProducts;
+    private List<PurchasedProducts> purchasedProducts;
 
     private double totalAmount;
 }

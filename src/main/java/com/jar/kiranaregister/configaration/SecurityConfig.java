@@ -20,17 +20,36 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+        /**
+         * Bean for password encoding using BCrypt hashing algorithm.
+         *  This ensures passwords are securely hashed before storage.
+         */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+
+    /**
+     * Bean for AuthenticationManager, which handles authentication logic.
+     * @param authConfig Authentication configuration provided by Spring Security.
+     * @return An instance of AuthenticationManager
+     **/
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
             throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+
+    /**
+     * Configures the security filter chain to handle request authorization, session management,
+     * and authentication filtering.
+     *
+     * @param http       The HttpSecurity object for configuring security settings.
+     * @param authFilter Custom authentication filter.
+     * @return Configured SecurityFilterChain instance.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthFilter authFilter)
             throws Exception {

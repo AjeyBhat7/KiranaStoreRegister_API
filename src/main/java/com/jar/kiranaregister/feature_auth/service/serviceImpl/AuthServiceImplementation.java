@@ -2,7 +2,7 @@ package com.jar.kiranaregister.feature_auth.service.serviceImpl;
 
 import com.jar.kiranaregister.feature_auth.service.AuthService;
 import com.jar.kiranaregister.feature_auth.utils.JwtUtil;
-import com.jar.kiranaregister.feature_users.dao.UserDAO;
+import com.jar.kiranaregister.feature_users.dao.UserDao;
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;
 import com.jar.kiranaregister.feature_users.model.requestObj.LoginRequest;
 import com.jar.kiranaregister.feature_users.repository.UserRepository;
@@ -22,14 +22,14 @@ public class AuthServiceImplementation implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-    private final UserDAO userDAO;
+    private final UserDao userDAO;
 
     @Autowired
     public AuthServiceImplementation(
             AuthenticationManager authenticationManager,
             JwtUtil jwtUtil,
             UserRepository userRepository,
-            UserDAO userDAO) {
+            UserDao userDAO) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
@@ -65,19 +65,15 @@ public class AuthServiceImplementation implements AuthService {
 
         // Retrieve user details
         UserEntity userEntity =
-                userRepository
-                        .findByPhoneNumber(request.getPhoneNumber())
-                        .orElseThrow(
-                                () -> {
-                                    log.error(" User not found .");
-                                    return new UsernameNotFoundException("User not found");
-                                });
+                userRepository.findByPhoneNumber(request.getPhoneNumber()).orElse(null);
+        if (userEntity == null) {
+            throw  new UsernameNotFoundException("User not found");
+        }
 
         // Generate JWT Token
         String token =
                 jwtUtil.generateToken(
                         userEntity.getId(),
-                        userEntity.getPhoneNumber(),
                         userEntity.getRoles().stream()
                                 .map(Enum::name)
                                 .collect(Collectors.toList()));
@@ -86,15 +82,5 @@ public class AuthServiceImplementation implements AuthService {
         return token;
     }
 
-    /**
-     * Handles user login by calling the authentication method.
-     *
-     * @param request The login request containing user credentials.
-     * @return A JWT token if authentication is successful.
-     */
-    @Override
-    public String login(LoginRequest request) {
-        log.debug("Processing login request for phone number: {}", request.getPhoneNumber());
-        return authenticateUser(request);
-    }
+
 }

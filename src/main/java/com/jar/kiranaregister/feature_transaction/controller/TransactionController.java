@@ -1,15 +1,12 @@
 package com.jar.kiranaregister.feature_transaction.controller;
 
-import com.jar.kiranaregister.enums.TransactionStatus;
-import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDTO;
-import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransactionRequest;
-import com.jar.kiranaregister.feature_transaction.model.requestObj.TransactionRequest;
-import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetailsResponse;
-import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionStatusResponse;
-import com.jar.kiranaregister.feature_transaction.service.TransactionService;
-import java.util.UUID;
 
+import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDto;
+import com.jar.kiranaregister.feature_transaction.model.requestObj.CreditTransactionRequest;
+import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransactionRequest;
+import com.jar.kiranaregister.feature_transaction.service.TransactionService;
 import com.jar.kiranaregister.response.ApiResponse;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,15 +32,11 @@ public class TransactionController {
      * @return The transaction status or an error message.
      */
     @PostMapping("credit")
-    public ResponseEntity<ApiResponse> createCreditTransaction(@RequestBody TransactionRequest request) {
-        log.info("Received request to create credit transaction: {}", request);
+    public ResponseEntity<ApiResponse> createCreditTransaction(
+            @RequestBody CreditTransactionRequest request) {
 
         ApiResponse response = new ApiResponse();
-        response.setSuccess(true);
-        TransactionStatusResponse status = transactionService.addTransaction(request);
-        response.setData(status);
-
-        log.info("Credit transaction created successfully: {}", status);
+        response.setData(transactionService.addTransaction(request));
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -55,31 +48,25 @@ public class TransactionController {
      * @return The transaction status or an error message.
      */
     @PostMapping("debit")
-    public ResponseEntity<ApiResponse> createDebitTransaction(@RequestBody DebitTransactionRequest request) {
-        log.info("Received request to create debit transaction: {}", request);
-
-
-
-        TransactionStatus status = transactionService.debitTransaction(request);
-        log.info("Debit transaction created successfully: {}", status);
+    public ResponseEntity<ApiResponse> createDebitTransaction(
+            @RequestBody DebitTransactionRequest request) {
 
         ApiResponse response = new ApiResponse();
-        response.setSuccess(true);
-        response.setData(status);
+        response.setData(transactionService.debitTransaction(request));
+
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     /** Retrieves all transactions by currency. */
     @GetMapping("getAll")
-    public ResponseEntity<ApiResponse> getAllTransactions(@RequestParam(required = false) String currency) {
-        log.info("Fetching all transactions with currency : {}", currency);
+    public ResponseEntity<ApiResponse> getAllTransactions(
+            @RequestParam(required = false) String currency) {
 
-        TransactionDetailsResponse transactions = transactionService.getAllTransactions(currency);
-        log.info("Successfully retrieved all transactions");
+//        TransactionDetailsResponse transactions = transactionService.getAllTransactions(currency);
 
         ApiResponse response = new ApiResponse();
-        response.setData(transactions);
-        response.setSuccess(true);
+        response.setData(transactionService.getAllTransactions(currency));
+
         response.setStatus(HttpStatus.OK.name());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -94,12 +81,10 @@ public class TransactionController {
     public ResponseEntity<ApiResponse> getTransactionById(
             @RequestParam UUID id, @RequestParam(required = false) String currency) {
 
-        TransactionDTO transaction = transactionService.getTransactionById(id, currency);
+        TransactionDto transaction = transactionService.getTransactionById(id, currency);
 
-        log.info("Successfully retrieved transactionId: {}", transaction.getId());
         ApiResponse response = new ApiResponse();
         response.setData(transaction);
-        response.setSuccess(true);
         response.setStatus(HttpStatus.OK.name());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -108,12 +93,10 @@ public class TransactionController {
     /** Delete transaction by ID. */
     @DeleteMapping("deleteTransaction")
     public ResponseEntity<ApiResponse> deleteTransaction(@RequestParam UUID id) {
-        log.info("Received request to delete transaction with ID: {}", id);
 
         transactionService.deleteTransaction(id);
-        log.info("Transaction deleted successfully: {}", id);
+
         ApiResponse response = new ApiResponse();
-        response.setSuccess(true);
         response.setDisplayMsg("Transaction deleted successfully");
         response.setStatus(HttpStatus.OK.name());
 

@@ -1,7 +1,7 @@
 package com.jar.kiranaregister.feature_report.controller;
 
-import com.jar.kiranaregister.feature_report.model.dto.ReportDTO;
 import com.jar.kiranaregister.feature_report.model.requestObj.ReportRequest;
+import com.jar.kiranaregister.feature_report.model.responseObj.ReportResponse;
 import com.jar.kiranaregister.feature_report.service.ReportService;
 import com.jar.kiranaregister.kafka.ReportKafkaProducer;
 import com.jar.kiranaregister.response.ApiResponse;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequestMapping("report")
 public class ReportController {
-    
+
     private final ReportService reportService;
     private final ReportKafkaProducer kafkaProducer;
 
@@ -35,10 +35,7 @@ public class ReportController {
     @PostMapping("generate")
     public ResponseEntity<ApiResponse> asyncGenerateReport(
             @RequestParam String interval, @RequestParam String currency) {
-        log.info(
-                "generating report for - Interval: {}, Currency: {}",
-                interval,
-                currency);
+        log.info("generating report for - Interval: {}, Currency: {}", interval, currency);
 
         ReportRequest request = new ReportRequest(interval, currency);
         kafkaProducer.sendReportRequest(request);
@@ -67,7 +64,7 @@ public class ReportController {
             @RequestParam String interval, @RequestParam String currency) {
         log.info("Fetching report - Interval: {}, Currency: {}", interval, currency);
 
-        ReportDTO report = reportService.fetchReport(interval, currency);
+        ReportResponse report = reportService.fetchReport(interval, currency);
 
         log.info("Report successfully fetched.");
 

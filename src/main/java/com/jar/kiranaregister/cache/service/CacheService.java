@@ -19,31 +19,43 @@ public class CacheService {
         this.redisKVTemplate = redisKVTemplate;
     }
 
+    /**
+     * sets the value in redis with expiry .
+     *
+     * @param key
+     * @param value
+     * @param ttl
+     */
     public void setValueToRedis(String key, String value, long ttl) {
         this.redisKVTemplate.opsForValue().set(key, value, ttl, TimeUnit.SECONDS);
     }
 
+    /**
+     * set the values in redis without expiry;
+     * @param key
+     * @param value
+     */
     public void setValueToRedisWithoutTtl(String key, String value) {
         this.redisKVTemplate.opsForValue().set(key, value);
     }
 
+    /**
+     * fetch value for specific key crom cahe
+     * @param key
+     * @return
+     */
     public String getValueFromRedis(String key) {
         return (String) this.redisKVTemplate.opsForValue().get(key);
     }
+
+    /**
+     * check requested key exist or not
+     * @param key
+     * @return
+     */
 
     public boolean checkKeyExists(String key) {
         return Boolean.TRUE.equals(this.redisKVTemplate.hasKey(key));
     }
 
-    public void unlinkKeys(List<String> keys) {
-        this.redisKVTemplate.unlink(keys);
-    }
-
-    public void incrementKey(String key) {
-        this.redisKVTemplate.opsForValue().increment(key);
-    }
-
-    public void decrementKey(String key) {
-        this.redisKVTemplate.opsForValue().decrement(key);
-    }
 }

@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class PurchasedProducts {
     String productId;
-
-    Long quantity;
+    long quantity;
+    double price;
 }

@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_transaction.DAO;
+package com.jar.kiranaregister.feature_transaction.dao;
 
 import com.jar.kiranaregister.feature_transaction.model.entity.Transaction;
 import com.jar.kiranaregister.feature_transaction.repository.TransactionRepository;
@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TransactionDAO {
+public class TransactionDao {
 
     private final TransactionRepository transactionRepository;
 
     @Autowired
-    public TransactionDAO(TransactionRepository transactionRepository) {
+    public TransactionDao(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
 
@@ -33,11 +33,22 @@ public class TransactionDAO {
         return transactionRepository.findByUserId(userId);
     }
 
+    /**
+     * fetch transaction By transactionId and userId
+     * @param id
+     * @param userId
+     * @return
+     */
     public Optional<Transaction> findByTransactionIdAndUserId(UUID id, String userId) {
 
         return transactionRepository.findByTransactionIdAndUserId(id, userId);
     }
 
+    /**
+     * checks and returns particular transaction exists in db
+     * @param id
+     * @return
+     */
     public boolean existsById(UUID id) {
         return transactionRepository.existsById(id);
     }
@@ -46,6 +57,11 @@ public class TransactionDAO {
         transactionRepository.deleteById(id);
     }
 
+    /**
+     *  fetch all the transaction from given date
+     * @param fromDate
+     * @return
+     */
     public List<Transaction> findByTransactionTimeAfter(Date fromDate) {
         return transactionRepository.findByTransactionTimeAfter(fromDate);
     }

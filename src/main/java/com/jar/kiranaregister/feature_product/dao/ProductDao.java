@@ -17,15 +17,20 @@ public class ProductDao {
         this.productRepository = productRepository;
     }
 
+    /**
+     * fetch product by id
+     * @param productId
+     * @return
+     */
     public Optional<Product> getProductById(String productId) {
 
         return productRepository.findById(productId);
     }
 
+
     public String saveProduct(Product product) {
 
         productRepository.save(product);
-
         return "Saved";
     }
 

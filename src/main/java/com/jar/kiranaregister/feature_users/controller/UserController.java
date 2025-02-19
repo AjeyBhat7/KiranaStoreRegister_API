@@ -48,12 +48,11 @@ public class UserController {
         response.setSuccess(true);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-
     }
 
     /**
-     * Handles user registration requests. This method creates a new user account
-     * The password is hashed before saving.
+     * Handles user registration requests. This method creates a new user account The password is
+     * hashed before saving.
      *
      * @param user
      * @return ResponseEntity with the created user details.

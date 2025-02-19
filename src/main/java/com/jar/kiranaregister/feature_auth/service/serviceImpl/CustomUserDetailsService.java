@@ -1,6 +1,6 @@
-package com.jar.kiranaregister.feature_auth.service;
+package com.jar.kiranaregister.feature_auth.service.serviceImpl;
 
-import com.jar.kiranaregister.feature_users.dao.UserDAO;
+import com.jar.kiranaregister.feature_users.dao.UserDao;
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;
 import com.jar.kiranaregister.feature_users.model.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +13,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserDAO userDAO;
+    private final UserDao userDAO;
 
     @Autowired
-    public CustomUserDetailsService(UserDAO userDAO) {
+    public CustomUserDetailsService(UserDao userDAO) {
         this.userDAO = userDAO;
     }
 
+    /**
+     * lodes user by username
+     * @param userId
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
@@ -32,6 +38,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .build();
     }
 
+    /**
+     * loads user by user id.
+     * @param userId
+     * @return
+     */
     public UserInfo loadUserByUserId(String userId) {
         UserEntity user = userDAO.findById(userId).orElse(null);
 

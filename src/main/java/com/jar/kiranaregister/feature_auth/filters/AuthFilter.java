@@ -3,7 +3,7 @@ package com.jar.kiranaregister.feature_auth.filters;
 import com.jar.kiranaregister.exception.JwtValidationException;
 import com.jar.kiranaregister.exception.TokenException;
 import com.jar.kiranaregister.exception.UserNotFoundException;
-import com.jar.kiranaregister.feature_auth.service.CustomUserDetailsService;
+import com.jar.kiranaregister.feature_auth.service.serviceImpl.CustomUserDetailsService;
 import com.jar.kiranaregister.feature_auth.utils.JwtUtil;
 import com.jar.kiranaregister.feature_users.model.entity.UserInfo;
 import jakarta.servlet.FilterChain;
@@ -32,6 +32,14 @@ public class AuthFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * A custom security filter that intercepts incoming requests to enforce JWT authentication
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -86,6 +94,12 @@ public class AuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * edit the servlet response based on error.
+     * @param response
+     * @param message
+     * @throws IOException
+     */
     private void handleAuthenticationError(HttpServletResponse response, String message)
             throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

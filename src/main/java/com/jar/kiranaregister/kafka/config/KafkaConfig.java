@@ -12,6 +12,12 @@ import org.springframework.kafka.core.*;
 
 @Configuration
 public class KafkaConfig {
+
+    /**
+     * This Sets strategy for creating kafka producer instance
+     *
+     * @return
+     */
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
@@ -21,11 +27,23 @@ public class KafkaConfig {
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
+
+    /**
+     * It wraps kafka instance and provides methods to send messages
+     *
+     * @return
+     */
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
+
+    /**
+     * Configuring consumer factory for consumers
+     *
+     * @return
+     */
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
