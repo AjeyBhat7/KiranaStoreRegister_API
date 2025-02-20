@@ -2,13 +2,11 @@ package com.jar.kiranaregister.feature_transaction.service;
 
 import com.jar.kiranaregister.enums.Interval;
 import com.jar.kiranaregister.enums.TransactionStatus;
-import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDto;
+import com.jar.kiranaregister.feature_transaction.model.dto.TransactionDto;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.CreditTransactionRequest;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransactionRequest;
-
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetailsResponse;
-import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionStatusResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +18,7 @@ public interface TransactionService {
      * @param request
      * @return
      */
-    TransactionStatusResponse addTransaction(CreditTransactionRequest request);
+    TransactionStatus addTransaction(CreditTransactionRequest request);
 
     /**
      * gets the list of transaction
@@ -32,6 +30,7 @@ public interface TransactionService {
 
     /**
      * fetch all the transactions then returns TransactionDetailsResponse object
+     *
      * @param currency
      * @return
      */
@@ -56,12 +55,14 @@ public interface TransactionService {
 
     /**
      * deletes transaction by id
+     *
      * @param id
      */
     void deleteTransaction(UUID id);
 
     /**
      * fetch transactions with in the give time interval
+     *
      * @param interval
      * @return
      */

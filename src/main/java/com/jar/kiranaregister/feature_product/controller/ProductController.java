@@ -20,10 +20,9 @@ public class ProductController {
         this.productService = productService;
     }
 
-
     /**
-     *  adds product to db
-     *  only admin can access this api
+     * adds product to db only admin can access this api
+     *
      * @param product
      * @return
      */
@@ -39,6 +38,7 @@ public class ProductController {
 
     /**
      * fetches all the products
+     *
      * @return
      */
     @GetMapping("getAllProducts")

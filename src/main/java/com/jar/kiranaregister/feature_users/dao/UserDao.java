@@ -26,6 +26,7 @@ public class UserDao {
 
     /**
      * fetch the user by phone number
+     *
      * @param phoneNumber
      * @return
      */
@@ -35,6 +36,7 @@ public class UserDao {
 
     /**
      * fetch the user by id
+     *
      * @param userId
      * @return
      */

@@ -5,7 +5,6 @@
 
 package com.jar.kiranaregister.cache.service;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -32,6 +31,7 @@ public class CacheService {
 
     /**
      * set the values in redis without expiry;
+     *
      * @param key
      * @param value
      */
@@ -41,6 +41,7 @@ public class CacheService {
 
     /**
      * fetch value for specific key crom cahe
+     *
      * @param key
      * @return
      */
@@ -50,12 +51,11 @@ public class CacheService {
 
     /**
      * check requested key exist or not
+     *
      * @param key
      * @return
      */
-
     public boolean checkKeyExists(String key) {
         return Boolean.TRUE.equals(this.redisKVTemplate.hasKey(key));
     }
-
 }

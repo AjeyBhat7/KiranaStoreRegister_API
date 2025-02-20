@@ -1,12 +1,13 @@
 package com.jar.kiranaregister.ratelimiting.filter;
 
 import com.jar.kiranaregister.exception.RateLimitExceededException;
-import com.jar.kiranaregister.feature_auth.utils.JwtUtil;
+import com.jar.kiranaregister.auth.utils.JwtUtil;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-
 
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
@@ -31,10 +30,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
-
     /**
-     * A custom security filter that intercepts incoming requests to enforce JWT authentication
-     * and rate limiting using the Bucket4j library.
+     * A custom security filter that intercepts incoming requests to enforce JWT authentication and
+     * rate limiting using the Bucket4j library.
      */
     @Override
     protected void doFilterInternal(
@@ -69,10 +67,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         }
     }
 
-
     /**
-     * Handles the case when a user exceeds the allowed request limit.
-     * Sends a 429 Too Many Requests HTTP response.
+     * Handles the case when a user exceeds the allowed request limit. Sends a 429 Too Many Requests
+     * HTTP response.
      */
     private void handleRateLimitExceeded(HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
@@ -80,18 +77,14 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         response.getWriter().write("{\"error\": \"Request limit exceeded\"}");
     }
 
-
-
-     /**
-     * Creates a new rate-limiting bucket for a user.
-     */
+    /** Creates a new rate-limiting bucket for a user. */
     private Bucket createNewBucket(String userId) {
         return Bucket4j.builder()
                 .addLimit(
                         Bandwidth.classic(
-                                10,
+                                100,
                                 Refill.intervally(
-                                        10, Duration.ofMinutes(1)))) // 10 requests per minute
+                                        10, Duration.ofSeconds(1))))
                 .build();
     }
 }

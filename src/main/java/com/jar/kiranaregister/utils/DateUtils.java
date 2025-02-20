@@ -1,7 +1,6 @@
 package com.jar.kiranaregister.utils;
 
 import com.jar.kiranaregister.enums.Interval;
-
 import java.util.Calendar;
 import java.util.Date;
 
@@ -9,6 +8,7 @@ public class DateUtils {
 
     /**
      * gets the specified time interval
+     *
      * @param interval
      * @return
      */

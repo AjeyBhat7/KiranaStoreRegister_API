@@ -6,8 +6,9 @@ import com.jar.kiranaregister.ratelimiting.AOP.RateLimited;
 public interface FxRatesService {
 
     /**
-     * check fxRate are available in cahe and return fxrates map
-     * if map is not available in cache fetches from fxRated api using restTemplate.
+     * check fxRate are available in cahe and return fxrates map if map is not available in cache
+     * fetches from fxRated api using restTemplate.
+     *
      * @return
      */
     @RateLimited(bucketName = "FxRatesRateLimitBucket")

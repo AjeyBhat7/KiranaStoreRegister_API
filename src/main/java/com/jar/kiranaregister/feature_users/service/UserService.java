@@ -6,6 +6,7 @@ public interface UserService {
 
     /**
      * Store user details in db
+     *
      * @param userDto
      * @return
      */

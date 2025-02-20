@@ -5,11 +5,7 @@ import com.jar.kiranaregister.enums.Interval;
 
 public class ValidationUtils {
 
-    /**
-     * validates the currency is valid or not
-     * @param currency
-     * @return
-     */
+    /** validates the currency is valid or not */
     public static CurrencyName validateCurrency(String currency) {
         try {
             return CurrencyName.valueOf(currency.toUpperCase());
@@ -18,11 +14,7 @@ public class ValidationUtils {
         }
     }
 
-    /**
-     * validate the passed interval is correct or not
-     * @param interval
-     * @return
-     */
+    /** validate the provided interval is correct or not */
     public static Interval validateInterval(String interval) {
 
         try {

@@ -18,6 +18,7 @@ public class BillDao {
 
     /**
      * save the bill in db
+     *
      * @param bill
      * @return
      */
@@ -27,6 +28,7 @@ public class BillDao {
 
     /**
      * fetch the bill by id
+     *
      * @param billId
      * @return
      */

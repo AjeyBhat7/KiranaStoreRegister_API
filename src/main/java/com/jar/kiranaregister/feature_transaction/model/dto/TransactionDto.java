@@ -1,4 +1,4 @@
-package com.jar.kiranaregister.feature_transaction.model.DTOModel;
+package com.jar.kiranaregister.feature_transaction.model.dto;
 
 import com.jar.kiranaregister.enums.CurrencyName;
 import com.jar.kiranaregister.enums.TransactionStatus;

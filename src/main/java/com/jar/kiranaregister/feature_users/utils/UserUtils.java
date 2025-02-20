@@ -3,7 +3,6 @@ package com.jar.kiranaregister.feature_users.utils;
 import com.jar.kiranaregister.enums.Role;
 import com.jar.kiranaregister.feature_users.model.dto.UserDto;
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

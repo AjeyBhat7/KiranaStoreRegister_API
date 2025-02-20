@@ -1,11 +1,15 @@
-package com.jar.kiranaregister.feature_auth.service.serviceImpl;
+package com.jar.kiranaregister.auth.service.serviceImpl;
 
-import com.jar.kiranaregister.feature_auth.service.AuthService;
-import com.jar.kiranaregister.feature_auth.utils.JwtUtil;
+import static com.jar.kiranaregister.feature_users.constants.UserConstants.JWT_TOKEN_GENERATED;
+
+import com.jar.kiranaregister.auth.service.AuthService;
+import com.jar.kiranaregister.auth.utils.JwtUtil;
 import com.jar.kiranaregister.feature_users.dao.UserDao;
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;
 import com.jar.kiranaregister.feature_users.model.requestObj.LoginRequest;
+import com.jar.kiranaregister.feature_users.model.responseObj.JwtTokenResponse;
 import com.jar.kiranaregister.feature_users.repository.UserRepository;
+import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +48,7 @@ public class AuthServiceImplementation implements AuthService {
      * @return JWT token .
      */
     @Override
-    public String authenticateUser(LoginRequest request) {
-        log.info("Attempting authentication for phone number: {}", request.getPhoneNumber());
+    public JwtTokenResponse authenticateUser(LoginRequest request) {
 
         // Retrieve user from the database
         UserEntity user = userDAO.findByPhoneNumber(request.getPhoneNumber()).orElse(null);
@@ -67,7 +70,7 @@ public class AuthServiceImplementation implements AuthService {
         UserEntity userEntity =
                 userRepository.findByPhoneNumber(request.getPhoneNumber()).orElse(null);
         if (userEntity == null) {
-            throw  new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("User not found");
         }
 
         // Generate JWT Token
@@ -78,9 +81,10 @@ public class AuthServiceImplementation implements AuthService {
                                 .map(Enum::name)
                                 .collect(Collectors.toList()));
 
-        log.info("JWT token generated for user: {}", userEntity.getId());
-        return token;
+        log.info(MessageFormat.format(JWT_TOKEN_GENERATED, userEntity.getId()));
+
+        JwtTokenResponse jwtTokenResponse = new JwtTokenResponse();
+        jwtTokenResponse.setJwtToken(token);
+        return jwtTokenResponse;
     }
-
-
 }

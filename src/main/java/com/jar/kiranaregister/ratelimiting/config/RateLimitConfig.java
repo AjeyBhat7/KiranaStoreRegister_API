@@ -10,9 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RateLimitConfig {
-    /**
-     * Rate limit bucket for FxRates service.
-     */
+    /** Rate limit bucket for FxRates service. */
     @Bean(name = "FxRatesRateLimitBucket")
     public Bucket FxRatesRateLimitBucket() {
         return Bucket4j.builder()
@@ -20,9 +18,7 @@ public class RateLimitConfig {
                 .build();
     }
 
-    /**
-     * Rate limit bucket for login  Api
-     */
+    /** Rate limit bucket for login Api */
     @Bean(name = "LoginRateLimiter")
     public Bucket LonginRateLimitBucket() {
         return Bucket4j.builder()
@@ -30,9 +26,7 @@ public class RateLimitConfig {
                 .build();
     }
 
-    /**
-     * Rate limit bucket for report generation Api
-     */
+    /** Rate limit bucket for report generation Api */
     @Bean(name = "ReportGenerationRateLimiter")
     public Bucket RecordGenarationRateLimitBucket() {
         return Bucket4j.builder()

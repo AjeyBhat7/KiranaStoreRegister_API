@@ -104,9 +104,12 @@ services:
     networks:
       - kiranaregister_network
 
+
+
 volumes:
   redis_data:
     driver: local
 
 networks:
   kiranaregister_network:
+    driver: bridge

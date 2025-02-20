@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 public class StringUtils {
     /**
      * converts string to requested object
+     *
      * @param json
      * @param cls
      * @return
@@ -22,6 +23,7 @@ public class StringUtils {
 
     /**
      * converts object to string
+     *
      * @param object
      * @return
      */

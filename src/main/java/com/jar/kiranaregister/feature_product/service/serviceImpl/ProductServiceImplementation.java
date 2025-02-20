@@ -1,5 +1,7 @@
 package com.jar.kiranaregister.feature_product.service.serviceImpl;
 
+import static com.jar.kiranaregister.feature_product.utils.ProductUtils.getProductDto;
+
 import com.jar.kiranaregister.feature_product.dao.ProductDao;
 import com.jar.kiranaregister.feature_product.model.dto.ProductDto;
 import com.jar.kiranaregister.feature_product.model.entity.Product;
@@ -9,8 +11,6 @@ import java.util.List;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.jar.kiranaregister.feature_product.utils.ProductUtils.getProductDto;
 
 @Service
 public class ProductServiceImplementation implements ProductService {
@@ -47,5 +47,4 @@ public class ProductServiceImplementation implements ProductService {
 
         return products;
     }
-
 }

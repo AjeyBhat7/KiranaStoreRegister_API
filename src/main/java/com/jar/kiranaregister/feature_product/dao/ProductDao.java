@@ -19,6 +19,7 @@ public class ProductDao {
 
     /**
      * fetch product by id
+     *
      * @param productId
      * @return
      */
@@ -26,7 +27,6 @@ public class ProductDao {
 
         return productRepository.findById(productId);
     }
-
 
     public String saveProduct(Product product) {
 

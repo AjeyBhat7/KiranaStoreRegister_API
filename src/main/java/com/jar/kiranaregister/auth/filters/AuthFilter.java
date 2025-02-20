@@ -1,10 +1,10 @@
-package com.jar.kiranaregister.feature_auth.filters;
+package com.jar.kiranaregister.auth.filters;
 
 import com.jar.kiranaregister.exception.JwtValidationException;
 import com.jar.kiranaregister.exception.TokenException;
 import com.jar.kiranaregister.exception.UserNotFoundException;
-import com.jar.kiranaregister.feature_auth.service.serviceImpl.CustomUserDetailsService;
-import com.jar.kiranaregister.feature_auth.utils.JwtUtil;
+import com.jar.kiranaregister.auth.service.serviceImpl.CustomUserDetailsService;
+import com.jar.kiranaregister.auth.utils.JwtUtil;
 import com.jar.kiranaregister.feature_users.model.entity.UserInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -34,6 +34,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
     /**
      * A custom security filter that intercepts incoming requests to enforce JWT authentication
+     *
      * @param request
      * @param response
      * @param filterChain
@@ -47,8 +48,8 @@ public class AuthFilter extends OncePerRequestFilter {
 
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (request.getServletPath().equals("/login")
-                || request.getServletPath().equals("/register")
+        if (request.getServletPath().equals("/api/v1/login")
+                || request.getServletPath().equals("/api/v1/register")
                 || request.getServletPath().startsWith("/actuator")) {
             filterChain.doFilter(request, response);
             return;
@@ -96,6 +97,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
     /**
      * edit the servlet response based on error.
+     *
      * @param response
      * @param message
      * @throws IOException

@@ -1,5 +1,7 @@
 package com.jar.kiranaregister.kafka.config;
 
+import static com.jar.kiranaregister.kafka.constants.KafkaConstants.REPORT_GROUP;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -27,7 +29,6 @@ public class KafkaConfig {
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
-
     /**
      * It wraps kafka instance and provides methods to send messages
      *
@@ -38,7 +39,6 @@ public class KafkaConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
-
     /**
      * Configuring consumer factory for consumers
      *
@@ -48,7 +48,7 @@ public class KafkaConfig {
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "report-group");
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, REPORT_GROUP);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(configProps);

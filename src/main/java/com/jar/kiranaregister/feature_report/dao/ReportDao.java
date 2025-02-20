@@ -1,12 +1,12 @@
 package com.jar.kiranaregister.feature_report.dao;
 
+import static com.jar.kiranaregister.feature_report.utils.ReportUtils.generateKey;
+
 import com.jar.kiranaregister.cache.service.CacheService;
 import com.jar.kiranaregister.feature_report.model.responseObj.ReportResponse;
 import com.jar.kiranaregister.utils.StringUtils;
 import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Repository;
-
-import static com.jar.kiranaregister.feature_report.utils.ReportUtils.generateKey;
 
 @Repository
 public class ReportDao {
@@ -19,9 +19,9 @@ public class ReportDao {
         this.cacheService = cacheService;
     }
 
-
     /**
      * stores report in cache based on interval and currency.
+     *
      * @param interval
      * @param currency
      * @param report
@@ -35,6 +35,7 @@ public class ReportDao {
 
     /**
      * fetch report from cache based on interval and currency.
+     *
      * @param interval
      * @param currency
      * @return
@@ -49,5 +50,4 @@ public class ReportDao {
 
         return StringUtils.fromJson(jsonReport, ReportResponse.class);
     }
-
 }

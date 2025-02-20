@@ -1,7 +1,7 @@
 package com.jar.kiranaregister.feature_transaction.service.serviceImplementation;
 
-import static com.jar.kiranaregister.feature_transaction.utils.TransactionUtils.mapToDTO;
-import static com.jar.kiranaregister.feature_transaction.utils.TransactionUtils.mapToTransactionDetails;
+import static com.jar.kiranaregister.feature_transaction.constants.TransactionConstants.*;
+import static com.jar.kiranaregister.feature_transaction.utils.TransactionUtils.*;
 import static com.jar.kiranaregister.utils.CurrencyConversionUtils.*;
 import static com.jar.kiranaregister.utils.DateUtils.getStartDate;
 import static com.jar.kiranaregister.utils.ValidationUtils.validateCurrency;
@@ -12,7 +12,7 @@ import com.jar.kiranaregister.enums.TransactionStatus;
 import com.jar.kiranaregister.enums.TransactionType;
 import com.jar.kiranaregister.feature_fxrates.service.FxRatesService;
 import com.jar.kiranaregister.feature_transaction.dao.TransactionDao;
-import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDto;
+import com.jar.kiranaregister.feature_transaction.model.dto.TransactionDto;
 import com.jar.kiranaregister.feature_transaction.model.entity.Bill;
 import com.jar.kiranaregister.feature_transaction.model.entity.Transaction;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.CreditTransactionRequest;
@@ -22,12 +22,10 @@ import com.jar.kiranaregister.feature_transaction.model.requestObj.GenerateBillR
 import com.jar.kiranaregister.feature_transaction.model.responseObj.BillResponse;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetails;
 import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionDetailsResponse;
-import com.jar.kiranaregister.feature_transaction.model.responseObj.TransactionStatusResponse;
 import com.jar.kiranaregister.feature_transaction.service.BillService;
 import com.jar.kiranaregister.feature_transaction.service.TransactionService;
 import com.jar.kiranaregister.feature_transaction.utils.TransactionUtils;
 import com.jar.kiranaregister.feature_users.model.entity.UserInfo;
-
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,70 +58,55 @@ public class TransactionServiceImplementation implements TransactionService {
      * @return
      */
     @Override
-    public TransactionStatusResponse addTransaction(CreditTransactionRequest request) {
+    public TransactionStatus addTransaction(CreditTransactionRequest request) {
         log.info(
-                "Adding transaction for amount: {} and currency: {}",
-                request.getAmount(),
-                request.getCurrency());
+                MessageFormat.format(
+                        LOG_ADD_TRANSACTION, request.getAmount(), request.getCurrency()));
 
         // Validate currency
         CurrencyName currencyName = validateCurrency(request.getCurrency());
         if (currencyName == null) {
-            log.warn("Invalid currency: {}", request.getCurrency());
+            log.warn(MessageFormat.format(LOG_INVALID_CURRENCY, request.getCurrency()));
             throw new IllegalArgumentException("Invalid currency");
         }
 
         // Get the authenticated user
         UserInfo userInfo =
                 (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("Transaction initiated by user: {}", userInfo.getUserId());
+        log.info(MessageFormat.format(LOG_TRANSACTION_INITIATED_BY_USER, userInfo.getUserId()));
 
-        // Create and save transaction
-        Transaction transaction = new Transaction();
+        Transaction transaction = prepareCreditTransaction(request, userInfo, currencyName);
 
-        transaction.setUserId(userInfo.getUserId());
-        transaction.setCurrencyName(currencyName);
-        transaction.setTransactionType(TransactionType.CREDIT);
-        transaction.setTransactionTime(new Date());
-        transaction.setAmount(request.getAmount());
-
+        // Generate Bill
         GenerateBillRequest generateBillRequest = new GenerateBillRequest();
         generateBillRequest.setAmount(request.getAmount());
         generateBillRequest.setPurchasedProductsList(request.getPurchasedProducts());
 
-        // Generate Bill
         BillResponse newBill = billService.generateBillId(generateBillRequest);
         transaction.setBillId(newBill.getBillId());
 
-
-        transaction.setStatus(TransactionStatus.SUCCESSFUL);
-
         transactionDAO.save(transaction);
-        log.info("Transaction saved successfully for user: {}", userInfo.getUserId());
+        log.info(MessageFormat.format(LOG_TRANSACTION_SAVED_SUCCESSFULLY, userInfo.getUserId()));
 
-        TransactionStatusResponse transactionStatusResponse = new TransactionStatusResponse();
-        transactionStatusResponse.setTransactionStatus(TransactionStatus.SUCCESSFUL);
-
-        return transactionStatusResponse;
+        return TransactionStatus.SUCCESSFUL;
     }
 
     /**
      * creates the debit transaction
      *
-     * @param request
+     * @param request DebitTransactionRequest
      * @return
      */
     @Override
     public TransactionStatus debitTransaction(DebitTransactionRequest request) {
         log.info(
-                "Adding transaction for amount: {} and currency: {}",
-                request.getAmount(),
-                request.getCurrency());
+                MessageFormat.format(
+                        LOG_ADD_TRANSACTION, request.getAmount(), request.getCurrency()));
 
         // Validate currency
         CurrencyName currencyName = validateCurrency(request.getCurrency());
         if (currencyName == null) {
-            log.warn("Invalid currency: {}", request.getCurrency());
+            log.warn(MessageFormat.format(LOG_INVALID_CURRENCY, request.getCurrency()));
             throw new IllegalArgumentException("Invalid currency");
         }
 
@@ -131,17 +114,10 @@ public class TransactionServiceImplementation implements TransactionService {
         UserInfo userInfo =
                 (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // Create and save transaction
-        Transaction transaction = new Transaction();
-        transaction.setUserId(userInfo.getUsername());
-        transaction.setAmount(request.getAmount());
-        transaction.setCurrencyName(currencyName);
-        transaction.setStatus(TransactionStatus.SUCCESSFUL);
-        transaction.setTransactionType(TransactionType.DEBIT);
-        transaction.setTransactionTime(new Date());
+        Transaction transaction = prepareDebitTransaction(request, userInfo, currencyName);
 
         transactionDAO.save(transaction);
-        log.info(MessageFormat.format("Transaction saved successfully for user: {0}", userInfo.getUserId()));
+        log.info(MessageFormat.format(LOG_TRANSACTION_SAVED_SUCCESSFULLY, userInfo.getUserId()));
 
         return TransactionStatus.SUCCESSFUL;
     }
@@ -155,7 +131,7 @@ public class TransactionServiceImplementation implements TransactionService {
     @Override
     public TransactionDetailsResponse getAllTransactions(String targetCurrency) {
 
-        if(targetCurrency != null) {
+        if (targetCurrency != null) {
             validateCurrency(targetCurrency);
         }
 
@@ -176,9 +152,10 @@ public class TransactionServiceImplementation implements TransactionService {
                         .toList();
 
         log.info(
-                "Retrieved {} transactions for user: {}",
-                transactionDetailsList.size(),
-                userInfo.getUserId());
+                MessageFormat.format(
+                        LOG_RETRIEVED_TRANSACTIONS,
+                        transactionDetailsList.size(),
+                        userInfo.getUserId()));
 
         TransactionDetailsResponse transactionDetailsResponse = new TransactionDetailsResponse();
         transactionDetailsResponse.setTransactionDetails(transactionDetailsList);
@@ -189,21 +166,27 @@ public class TransactionServiceImplementation implements TransactionService {
     private TransactionDetails getTransactionDetails(
             String targetCurrency, Transaction transaction, Map<String, Double> exchangeRates) {
 
-        Bill bill = (transaction.getTransactionType() == TransactionType.CREDIT)
-                ? billService.getBill(transaction.getBillId()) : null;
+        Bill bill =
+                (transaction.getTransactionType() == TransactionType.CREDIT)
+                        ? billService.getBill(transaction.getBillId())
+                        : null;
 
-        if(targetCurrency != null) {
+        CurrencyConversionRequest ccRequest =
+                getCurrencyConversionRequest(targetCurrency, transaction, exchangeRates);
 
-            if(bill != null) {
-                convertBillCurrency(targetCurrency, transaction, exchangeRates, bill);
+        if (targetCurrency != null) {
+
+            if (bill != null) {
+                bill.getPurchasedProducts()
+                        .forEach(
+                                product -> {
+                                    product.setPrice(
+                                            getConvertedAmount(product.getPrice(), ccRequest));
+                                });
+                bill.setTotalAmount(getConvertedAmount(bill.getTotalAmount(), ccRequest));
             }
 
-            CurrencyConversionRequest ccRequest = new CurrencyConversionRequest();
-            ccRequest.setExchangeRates(exchangeRates);
-            ccRequest.setFromCurrency(transaction.getCurrencyName().name());
-            ccRequest.setToCurrency(targetCurrency);
-
-            transaction.setAmount(getConvertedAmount(transaction.getAmount(),ccRequest));
+            transaction.setAmount(getConvertedAmount(transaction.getAmount(), ccRequest));
 
             transaction.setCurrencyName(CurrencyName.valueOf(targetCurrency));
         }
@@ -223,23 +206,22 @@ public class TransactionServiceImplementation implements TransactionService {
                 (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         validateCurrency(targetCurrency);
-        log.info("Fetching transaction with ID: {} for user: {}", id, userInfo.getUserId());
+        log.info(MessageFormat.format(LOG_FETCHING_TRANSACTION_BY_ID, id, userInfo.getUserId()));
 
         Map<String, Double> exchangeRates = fxRatesService.getLatestFxRates().getRates();
 
-
-
-        Transaction transaction = transactionDAO.findByTransactionIdAndUserId(id, userInfo.getUsername()).orElse(null);
+        Transaction transaction =
+                transactionDAO
+                        .findByTransactionIdAndUserId(id, userInfo.getUsername())
+                        .orElse(null);
         if (transaction == null) {
             throw new ResourceNotFoundException("Transaction not found");
         }
 
-        CurrencyConversionRequest ccRequest = new CurrencyConversionRequest();
-        ccRequest.setExchangeRates(exchangeRates);
-        ccRequest.setFromCurrency(transaction.getCurrencyName().name());
-        ccRequest.setToCurrency(targetCurrency);
+        CurrencyConversionRequest ccRequest =
+                getCurrencyConversionRequest(targetCurrency, transaction, exchangeRates);
 
-        transaction.setAmount(getConvertedAmount(transaction.getAmount(),ccRequest));
+        transaction.setAmount(getConvertedAmount(transaction.getAmount(), ccRequest));
         transaction.setCurrencyName(CurrencyName.valueOf(targetCurrency));
 
         return mapToDTO(transaction);
@@ -259,61 +241,23 @@ public class TransactionServiceImplementation implements TransactionService {
 
         Map<String, Double> exchangeRates = fxRatesService.getLatestFxRates().getRates();
 
-         TransactionDetails transactionDetails =transactionDAO
-                .findByTransactionIdAndUserId(id, userInfo.getUserId())
-                .map(
-                        transaction -> {
-                            return getDetails(targetCurrency, transaction, exchangeRates);
-                        })
-                .orElse(null);
+        TransactionDetails transactionDetails =
+                transactionDAO
+                        .findByTransactionIdAndUserId(id, userInfo.getUserId())
+                        .map(
+                                transaction -> {
+                                    return getDetails(targetCurrency, transaction, exchangeRates);
+                                })
+                        .orElse(null);
 
-         if(transactionDetails == null) {
-             log.warn("Transaction not found with ID: {} for user: {}", id, userInfo.getUserId());
+        if (transactionDetails == null) {
+            log.warn(MessageFormat.format(LOG_TRANSACTION_NOT_FOUND, id, userInfo.getUserId()));
 
-             throw new ResourceNotFoundException("Transaction not found");
-         }
+            throw new ResourceNotFoundException("Transaction not found");
+        }
 
-         return transactionDetails;
-
+        return transactionDetails;
     }
-
-
-    /**
-     * fetch the bill from billService
-     * converts the currency to target currency
-     * @param targetCurrency
-     * @param transaction
-     * @param exchangeRates
-     * @return
-     */
-    private TransactionDetails getDetails(String targetCurrency, Transaction transaction, Map<String, Double> exchangeRates) {
-
-        Bill bill = billService.getBill(transaction.getBillId());
-
-        convertBillCurrency(targetCurrency, transaction, exchangeRates, bill);
-
-        CurrencyConversionRequest currencyConversionRequest = new CurrencyConversionRequest();
-
-        transaction.setAmount(getConvertedAmount(transaction.getAmount(),currencyConversionRequest));
-
-        return mapToTransactionDetails(transaction, bill);
-    }
-
-
-    private void convertBillCurrency(String targetCurrency, Transaction transaction, Map<String, Double> exchangeRates, Bill bill) {
-        CurrencyConversionRequest currencyConversionRequest = new CurrencyConversionRequest();
-
-        currencyConversionRequest.setFromCurrency(transaction.getCurrencyName().name());
-        currencyConversionRequest.setToCurrency(targetCurrency);
-        currencyConversionRequest.setExchangeRates(exchangeRates);
-
-        bill.getPurchasedProducts().forEach(product -> {
-            product.setPrice(getConvertedAmount(product.getPrice(),currencyConversionRequest));
-        });
-
-        bill.setTotalAmount(getConvertedAmount(bill.getTotalAmount(),currencyConversionRequest));
-    }
-
 
     /**
      * delete transaction by id
@@ -322,15 +266,15 @@ public class TransactionServiceImplementation implements TransactionService {
      */
     @Override
     public void deleteTransaction(UUID id) {
-        log.info("Request to delete transaction with ID: {}", id);
+        log.info(MessageFormat.format(LOG_DELETE_TRANSACTION_REQUEST, id));
 
         if (!transactionDAO.existsById(id)) {
-            log.warn("Transaction not found with ID: {}", id);
+            log.warn(MessageFormat.format(LOG_TRANSACTION_NOT_FOUND, id, "N/A"));
             throw new IllegalArgumentException("Transaction not found");
         }
 
         transactionDAO.deleteById(id);
-        log.info("Transaction with ID: {} deleted successfully", id);
+        log.info(MessageFormat.format(LOG_TRANSACTION_DELETED_SUCCESSFULLY, id));
     }
 
     /**
@@ -341,14 +285,41 @@ public class TransactionServiceImplementation implements TransactionService {
      */
     @Override
     public List<TransactionDto> fetchTransactionsByInterval(Interval interval) {
-        log.info("Fetching transactions for interval: {}", interval);
+        log.info(MessageFormat.format(LOG_FETCHING_TRANSACTIONS_FOR_INTERVAL, interval));
 
         Date fromDate = getStartDate(interval);
         List<Transaction> transactions = transactionDAO.findByTransactionTimeAfter(fromDate);
 
-        log.info("Retrieved {} transactions for interval: {}", transactions.size(), interval);
+        log.info(
+                MessageFormat.format(
+                        LOG_RETRIEVED_TRANSACTIONS_FOR_INTERVAL, transactions.size(), interval));
         return transactions.stream().map(TransactionUtils::mapToDTO).collect(Collectors.toList());
     }
 
+    /**
+     * fetch the bill from billService converts the currency to target currency
+     *
+     */
+    private TransactionDetails getDetails(
+            String targetCurrency, Transaction transaction, Map<String, Double> exchangeRates) {
 
+        CurrencyConversionRequest currencyConversionRequest =
+                getCurrencyConversionRequest(targetCurrency, transaction, exchangeRates);
+
+        Bill bill = billService.getBill(transaction.getBillId());
+
+        bill.getPurchasedProducts()
+                .forEach(
+                        product -> {
+                            product.setPrice(
+                                    getConvertedAmount(
+                                            product.getPrice(), currencyConversionRequest));
+                        });
+
+        bill.setTotalAmount(getConvertedAmount(bill.getTotalAmount(), currencyConversionRequest));
+
+        transaction.setAmount(
+                getConvertedAmount(transaction.getAmount(), currencyConversionRequest));
+        return mapToTransactionDetails(transaction, bill);
+    }
 }

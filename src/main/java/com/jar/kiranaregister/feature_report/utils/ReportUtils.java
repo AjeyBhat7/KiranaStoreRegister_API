@@ -4,6 +4,7 @@ public class ReportUtils {
 
     /**
      * generates key for redis storage based on time interval and currency
+     *
      * @param interval
      * @param currency
      * @return

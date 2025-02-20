@@ -1,7 +1,6 @@
 package com.jar.kiranaregister.feature_transaction.controller;
 
-
-import com.jar.kiranaregister.feature_transaction.model.DTOModel.TransactionDto;
+import com.jar.kiranaregister.feature_transaction.model.dto.TransactionDto;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.CreditTransactionRequest;
 import com.jar.kiranaregister.feature_transaction.model.requestObj.DebitTransactionRequest;
 import com.jar.kiranaregister.feature_transaction.service.TransactionService;
@@ -36,7 +35,7 @@ public class TransactionController {
             @RequestBody CreditTransactionRequest request) {
 
         ApiResponse response = new ApiResponse();
-        response.setData(transactionService.addTransaction(request));
+        response.setStatus(transactionService.addTransaction(request).name());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -52,7 +51,7 @@ public class TransactionController {
             @RequestBody DebitTransactionRequest request) {
 
         ApiResponse response = new ApiResponse();
-        response.setData(transactionService.debitTransaction(request));
+        response.setStatus(transactionService.debitTransaction(request).name());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -61,8 +60,6 @@ public class TransactionController {
     @GetMapping("getAll")
     public ResponseEntity<ApiResponse> getAllTransactions(
             @RequestParam(required = false) String currency) {
-
-//        TransactionDetailsResponse transactions = transactionService.getAllTransactions(currency);
 
         ApiResponse response = new ApiResponse();
         response.setData(transactionService.getAllTransactions(currency));

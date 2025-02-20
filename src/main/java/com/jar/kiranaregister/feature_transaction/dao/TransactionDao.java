@@ -35,6 +35,7 @@ public class TransactionDao {
 
     /**
      * fetch transaction By transactionId and userId
+     *
      * @param id
      * @param userId
      * @return
@@ -46,6 +47,7 @@ public class TransactionDao {
 
     /**
      * checks and returns particular transaction exists in db
+     *
      * @param id
      * @return
      */
@@ -58,7 +60,8 @@ public class TransactionDao {
     }
 
     /**
-     *  fetch all the transaction from given date
+     * fetch all the transaction from given date
+     *
      * @param fromDate
      * @return
      */

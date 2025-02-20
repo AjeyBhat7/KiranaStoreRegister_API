@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ProductService {
 
-
     /**
      * create new product ;
+     *
      * @param product
      * @return
      */
@@ -16,6 +16,7 @@ public interface ProductService {
 
     /**
      * fetch product details by id
+     *
      * @param productId
      * @return
      */
@@ -23,6 +24,7 @@ public interface ProductService {
 
     /**
      * returns all products .
+     *
      * @return
      */
     public List<Product> getAllProducts();

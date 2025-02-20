@@ -51,8 +51,8 @@ dependencies {
 	// kafka
 	implementation 'org.springframework.kafka:spring-kafka'
 
-	// implementation 'org.apache.kafka:kafka-clients:3.9.0'
-
+//	elk
+	implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
 //	dev
 	compileOnly 'org.projectlombok:lombok'
