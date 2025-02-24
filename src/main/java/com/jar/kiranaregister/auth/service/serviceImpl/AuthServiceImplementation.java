@@ -4,6 +4,7 @@ import static com.jar.kiranaregister.feature_users.constants.UserConstants.JWT_T
 
 import com.jar.kiranaregister.auth.service.AuthService;
 import com.jar.kiranaregister.auth.utils.JwtUtil;
+import com.jar.kiranaregister.exception.UserNotFoundException;
 import com.jar.kiranaregister.feature_users.dao.UserDao;
 import com.jar.kiranaregister.feature_users.model.entity.UserEntity;
 import com.jar.kiranaregister.feature_users.model.requestObj.LoginRequest;
@@ -57,7 +58,7 @@ public class AuthServiceImplementation implements AuthService {
 
         if (userId == null) {
             log.warn(" User not found for phone number: {}", request.getPhoneNumber());
-            throw new UsernameNotFoundException("User not found for the phone number");
+            throw new UserNotFoundException("User not found for the phone number");
         }
 
         // Authenticate user

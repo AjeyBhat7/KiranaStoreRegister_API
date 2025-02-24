@@ -14,7 +14,7 @@ public class RateLimitConfig {
     @Bean(name = "FxRatesRateLimitBucket")
     public Bucket FxRatesRateLimitBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofSeconds(1))))
+                .addLimit(Bandwidth.classic(60, Refill.greedy(6, Duration.ofSeconds(1))))
                 .build();
     }
 
@@ -22,7 +22,7 @@ public class RateLimitConfig {
     @Bean(name = "LoginRateLimiter")
     public Bucket LonginRateLimitBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofSeconds(3))))
+                .addLimit(Bandwidth.classic(50, Refill.greedy(5, Duration.ofSeconds(1))))
                 .build();
     }
 
@@ -30,7 +30,7 @@ public class RateLimitConfig {
     @Bean(name = "ReportGenerationRateLimiter")
     public Bucket RecordGenarationRateLimitBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(10, Refill.greedy(10, Duration.ofMinutes(1))))
+                .addLimit(Bandwidth.classic(10, Refill.greedy(1, Duration.ofSeconds(1))))
                 .build();
     }
 }

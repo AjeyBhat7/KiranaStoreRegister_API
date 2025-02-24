@@ -23,7 +23,7 @@ public class GlobalExceptionController {
     /** Exception handler for Illeagle argument exception */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.error(MessageFormat.format(INVALID_ARGUMENT, e.getMessage()), e);
+        log.error(MessageFormat.format(INVALID_ARGUMENT, e.getMessage()));
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
@@ -52,7 +52,7 @@ public class GlobalExceptionController {
     @ExceptionHandler(HttpClientErrorException.Forbidden.class)
     public ResponseEntity<ApiResponse> handleHttpClientErrorException(
             HttpClientErrorException.Forbidden e) {
-        log.error(MessageFormat.format(ACCESS_DENIED, e.getMessage()), e);
+        log.error(MessageFormat.format(ACCESS_DENIED, e.getMessage()));
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
@@ -66,7 +66,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse> handleBadCredentials(BadCredentialsException e) {
-        log.error(MessageFormat.format(INVALID_CREDENTIALS, e.getMessage()), e);
+        log.error(MessageFormat.format(INVALID_CREDENTIALS, e.getMessage()));
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
@@ -78,9 +78,25 @@ public class GlobalExceptionController {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleUserNotFoundException(UserNotFoundException e) {
+        log.error(MessageFormat.format(RESOURCE_NOT_FOUND, e.getMessage()));
+        ApiResponse response = new ApiResponse();
+        response.setSuccess(false);
+        response.setStatus("error");
+        response.setErrorMessage("User not found");
+        response.setErrorCode(String.valueOf(HttpStatus.NOT_FOUND.value()));
+        response.setDisplayMsg("User not found");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> handleResourceNotFound(ResourceNotFoundException e) {
-        log.error(MessageFormat.format(RESOURCE_NOT_FOUND, e.getMessage()), e);
+        log.error(MessageFormat.format(RESOURCE_NOT_FOUND, e.getMessage()));
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
@@ -94,7 +110,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGeneralExceptions(Exception e) {
-        log.error(MessageFormat.format(UNHANDLED_EXCEPTION, e.getMessage()), e);
+        log.error(MessageFormat.format(UNHANDLED_EXCEPTION, e.getMessage()));
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
@@ -108,7 +124,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException e) {
-        log.error(MessageFormat.format(RUNTIME_EXCEPTION, e.getMessage()), e);
+        log.error(MessageFormat.format(RUNTIME_EXCEPTION, e.getMessage()));
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
@@ -122,7 +138,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(RateLimitExceededException.class)
     public ResponseEntity<ApiResponse> handleRateLimitException(RateLimitExceededException e) {
-        log.error(MessageFormat.format(RATE_LIMIT_EXCEEDED, e.getMessage()), e);
+        log.error(MessageFormat.format(RATE_LIMIT_EXCEEDED, e.getMessage()));
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
@@ -136,7 +152,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiResponse> handleIllegalStateException(IllegalStateException e) {
-        log.error(MessageFormat.format(ILLEGAL_STATE, e.getMessage()), e);
+        log.error(MessageFormat.format(ILLEGAL_STATE, e.getMessage()));
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);
@@ -151,7 +167,7 @@ public class GlobalExceptionController {
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ApiResponse> handleAuthorizationDeniedException(
             AuthorizationDeniedException e) {
-        log.error(MessageFormat.format(AUTHORIZATION_DENIED, e.getMessage()), e);
+        log.error(MessageFormat.format(AUTHORIZATION_DENIED, e.getMessage()));
 
         ApiResponse response = new ApiResponse();
         response.setSuccess(false);

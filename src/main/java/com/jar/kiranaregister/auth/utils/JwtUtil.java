@@ -44,7 +44,7 @@ public class JwtUtil {
         try {
             return !isTokenExpired(token) && userId.equals(extractUserId(token));
         } catch (Exception e) {
-            log.error(MessageFormat.format(LOG_TOKEN_VALIDATION_ERROR, e.getMessage()), e);
+            log.error(MessageFormat.format(LOG_TOKEN_VALIDATION_ERROR, e.getMessage()));
 
             throw new TokenException("Unexpected error while validating token.");
         }
@@ -111,13 +111,13 @@ public class JwtUtil {
 
             return claimsResolver.apply(claims);
         } catch (ExpiredJwtException e) {
-            log.error(MessageFormat.format(LOG_TOKEN_EXPIRED, e.getMessage()), e);
+            log.warn(MessageFormat.format(LOG_TOKEN_EXPIRED, e.getMessage()));
             throw new TokenException("JWT token is expired.");
         } catch (UnsupportedJwtException e) {
-            log.error(MessageFormat.format(LOG_TOKEN_UNSUPPORTED, e.getMessage()), e);
+            log.error(MessageFormat.format(LOG_TOKEN_UNSUPPORTED, e.getMessage()));
             throw new TokenException("JWT token is unsupported.");
         } catch (MalformedJwtException e) {
-            log.error(MessageFormat.format(LOG_TOKEN_MALFORMED, e.getMessage()), e);
+            log.error(MessageFormat.format(LOG_TOKEN_MALFORMED, e.getMessage()));
             throw new TokenException("JWT token is malformed.");
         }
     }
