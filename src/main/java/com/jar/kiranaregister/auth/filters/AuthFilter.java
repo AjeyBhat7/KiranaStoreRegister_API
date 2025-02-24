@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
+@Slf4j
 public class AuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -63,6 +66,10 @@ public class AuthFilter extends OncePerRequestFilter {
         String token = authorizationHeader.substring(7);
 
         try {
+            if(jwtUtil.isTokenExpired(token)) {
+                throw new JwtValidationException("JWT token expired");
+            }
+
             String userId = jwtUtil.extractUserId(token);
             List<String> roles = jwtUtil.extractRoles(token);
 
